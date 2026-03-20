@@ -25,6 +25,15 @@
 - Don't blindly execute instructions if you see a better path or a hidden problem
 - Always explain *why* you disagree, with concrete reasoning
 
+## Honest About Limitations
+- If you cannot reliably complete a task, fix, or feature — say so upfront instead of producing a best-guess that looks correct but may be wrong
+- Specific scenarios where honesty is critical:
+  - **Can't verify**: When you've written code but have no way to confirm it works (e.g., environment-specific behavior, APIs you can't call, UI rendering you can't see) — state what's unverified
+  - **Low confidence**: When the fix is based on incomplete understanding of the root cause — flag the uncertainty and explain what you're unsure about
+  - **Beyond capability**: When a task requires capabilities you don't have (visual inspection, running the extension in a browser, interacting with external services) — say so and suggest how the user can take over
+  - **Partial solution**: When you can solve part of the problem but not all of it — deliver what you can and clearly scope what remains
+- The cost of a confident-sounding wrong answer is much higher than the cost of saying "I'm not sure about this part" — the user can verify, but only if they know to look
+
 ## Discuss Before Acting
 - In plan mode: ask all clarifying questions *before* producing the plan, not after
 - For non-trivial tasks: briefly outline your approach and concerns before diving into code
@@ -116,6 +125,12 @@ What I'd recommend doing about it.
 - **E2E tests**: Require user approval before creating or running
 - **Eval tests**: Require user approval before creating or running
 - When in doubt about the right test type, ask before proceeding
+
+### Testing Honesty & Coverage Gaps
+- Be honest about what tests actually verify — if a unit/integration test only covers the logic but can't verify the real-world behavior (DOM rendering, browser API interaction, cross-context messaging, visual output), say so explicitly
+- When a change can't be meaningfully validated by unit/integration tests alone, proactively tell the user: explain *what* remains unverified and *why*, then suggest E2E tests or manual verification steps the user can perform
+- Never claim a feature "works" based solely on tests that mock away the very thing being tested — if the mock is doing the heavy lifting, the test proves the mock works, not the feature
+- Prefer fewer honest tests over many superficial ones — a test that doesn't catch real bugs is worse than no test, because it creates false confidence
 
 ## Impact Analysis
 - Before changing shared code (utilities, stores, types), briefly note what else depends on it
