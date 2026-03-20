@@ -64,6 +64,9 @@ What I'd recommend doing about it.
 ```
 
 - Update the `status` field when observations are addressed (open → in-progress → resolved)
+- When a fix or feature is completed that was triggered by an observation, update the observation doc:
+  - Set `status: resolved`
+  - Add a `## Resolution` section at the bottom describing what was done and when
 - Keep resolved files for history — do not delete them
 
 ## Comment the "Why", Not the "What"
