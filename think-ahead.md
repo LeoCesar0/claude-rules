@@ -87,7 +87,7 @@ What I'd recommend doing about it.
 - When a fix or feature is completed that was triggered by an observation, update the observation doc:
   - Set `status: resolved`
   - Add a `## Resolution` section at the bottom describing what was done and when
-- Keep resolved files for history — do not delete them
+- After resolving, ask the user whether to keep the observation file for history or delete it
 
 ## Comment the "Why", Not the "What"
 - Don't comment obvious code — the code should speak for itself
