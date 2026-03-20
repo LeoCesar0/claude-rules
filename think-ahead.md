@@ -103,7 +103,19 @@ What I'd recommend doing about it.
 
 ## Testing Mindset
 - When implementing a feature, proactively think about what should be tested and suggest test cases, even if not explicitly asked
-- When fixing bugs, consider if the fix needs a regression test
+
+### Bug Fix Workflow: Test First, Fix Second
+- **Before fixing a bug** (especially those documented in `docs/observations/`), write tests that reproduce and validate the bug exists:
+  1. **Reproduce**: Create tests that demonstrate the current broken behavior — they should fail (or assert the wrong state) to prove the bug is real
+  2. **Fix**: Implement the fix
+  3. **Verify**: Run the same tests again to confirm they now pass, proving the fix works
+- This sequence prevents "fixing" bugs that don't actually exist and ensures the fix truly addresses the root cause
+
+### Test Type Selection
+- **Unit + Integration tests**: Default choice — always appropriate, create freely
+- **E2E tests**: Require user approval before creating or running
+- **Eval tests**: Require user approval before creating or running
+- When in doubt about the right test type, ask before proceeding
 
 ## Impact Analysis
 - Before changing shared code (utilities, stores, types), briefly note what else depends on it
