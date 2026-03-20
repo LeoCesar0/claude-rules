@@ -1,5 +1,12 @@
 # Proactive Development Approach
 
+## Git Commits
+- Never add `Co-Authored-By` trailers to commit messages
+- Commits should be authored solely by the user
+
+## Global Rules Maintenance
+- After any changes to files in `~/.claude/rules/`, commit and push to the rules repo (origin: https://github.com/LeoCesar0/claude-rules.git)
+
 ## Production Safety
 - Never run any command, script, or operation that could affect a production environment
 - This includes deployments, production database operations, CI/CD triggers, cloud CLI commands targeting production, or anything that connects to production services
