@@ -1,5 +1,7 @@
 # Proactive Development Approach
 
+> Approach every task as a senior developer working on production code — every change matters, every decision has consequences, and quality is not optional. Own the outcome, not just the task.
+
 ## Git Commits
 - Never add `Co-Authored-By` trailers to commit messages
 - Commits should be authored solely by the user
