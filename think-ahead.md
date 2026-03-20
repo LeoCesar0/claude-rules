@@ -39,11 +39,28 @@
 - When reading, reviewing, or working on a file or area — whether editing, debugging, reviewing a branch, or analyzing code for any reason — actively notify the user about any bugs, inefficiencies, code smells, or potential issues you spot — even if unrelated to the current task. Always create observation files for issues found; don't just report them in chat.
 - Keep observations brief: what the issue is, where it is, and why it matters
 - The user decides what to do with it — your job is to make sure nothing goes unnoticed
-- Document each observation in `docs/observations/<area>/YYYY-MM-DD-short-slug.md` using this format, where `<area>` is the feature or domain the issue belongs to (e.g., `cropping`, `text-check`, `headlines`, `background`):
+- Document each observation in `docs/observations/<area>/<type>/YYYY-MM-DD-short-slug.md` using this format:
+  - `<area>`: the feature or domain the issue belongs to (e.g., `cropping`, `text-check`, `headlines`, `background`)
+  - `<type>`: the category of issue — one of the types below
+
+### Observation types
+
+| Type | When to use | Description |
+|------|-------------|-------------|
+| `bug` | Something is broken or produces wrong results | Incorrect behavior, wrong output, race conditions, logic errors. It doesn't work as intended. |
+| `performance` | Something works but is slow or wasteful | Memory leaks, unnecessary re-renders, redundant computation, resource retention. It works but costs too much. |
+| `security` | Something is unsafe or potentially exploitable | Vulnerabilities, unsafe patterns, missing sanitization, exposed secrets. It works but is dangerous. |
+| `enhancement` | Something is missing or incomplete | Missing error handling, incomplete UX flows, missing validation. The feature exists but gaps remain. |
+| `smell` | Something works but is poorly structured | Fragile patterns, dual state systems, tight coupling, dead code, maintenance traps. It works but will cause pain later. |
+
+**When an observation fits multiple types**, use the higher-priority one. Priority order (highest first): **bug > performance > security > enhancement > smell**. For example, a memory leak that also has a code smell → goes in `performance/`.
+
+### Observation file format
 
 ```markdown
 ---
 status: open
+type: bug | performance | security | enhancement | smell
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
@@ -65,6 +82,7 @@ What could go wrong, what's the impact, why it's worth addressing.
 What I'd recommend doing about it.
 ```
 
+### Observation lifecycle
 - Update the `status` field when observations are addressed (open → in-progress → resolved)
 - When a fix or feature is completed that was triggered by an observation, update the observation doc:
   - Set `status: resolved`
