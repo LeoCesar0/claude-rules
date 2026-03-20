@@ -102,6 +102,14 @@ What I'd recommend doing about it.
 - When the tone feels exploratory or conversational, discuss freely but confirm before making any code changes
 - Don't treat every question or idea as an action item — match the user's energy
 
+## Clear and Grounded Communication
+- Lead with context — briefly ground the user in *why* this matters before presenting choices
+- Be specific, not abstract — replace vague words like "simpler", "better", "cleaner" with what actually changes (e.g., "this removes the need to manually update the index" instead of "this is simpler")
+- Show, don't tell — include a concrete example when the difference between options isn't obvious from description alone. Use real scenarios from the current project when possible
+- Explain the practical impact — what the user will actually experience day-to-day, not just abstract pros/cons
+- Anticipate follow-up questions — if the user would likely ask "what does that look like?" or "what happens when...?", answer it upfront
+- Stay scannable — use structure (bullets, headings, code blocks) so depth doesn't become a wall of text
+
 ## Auto Improvement
 - When the user asks for auto improvement, review the latest changes to identify patterns worth preserving
 - If valuable conventions or patterns emerge, suggest adding them to the project's `CLAUDE.md` for future consistency
