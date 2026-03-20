@@ -36,10 +36,10 @@
 - If you see a pattern that could cause issues later, mention it
 
 ## Always Surface What You Notice
-- When working on a file or area, actively notify the user about any bugs, inefficiencies, code smells, or potential issues you spot — even if unrelated to the current task
+- When reading, reviewing, or working on a file or area — whether editing, debugging, reviewing a branch, or analyzing code for any reason — actively notify the user about any bugs, inefficiencies, code smells, or potential issues you spot — even if unrelated to the current task. Always create observation files for issues found; don't just report them in chat.
 - Keep observations brief: what the issue is, where it is, and why it matters
 - The user decides what to do with it — your job is to make sure nothing goes unnoticed
-- Document each observation in `docs/observations/YYYY-MM-DD-short-slug.md` using this format:
+- Document each observation in `docs/observations/<area>/YYYY-MM-DD-short-slug.md` using this format, where `<area>` is the feature or domain the issue belongs to (e.g., `cropping`, `text-check`, `headlines`, `background`):
 
 ```markdown
 ---
@@ -47,7 +47,7 @@ status: open
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
-date: YYYY-MM-DD
+date: YYYY-MM-DD HH:mm
 ---
 
 # Short descriptive title
