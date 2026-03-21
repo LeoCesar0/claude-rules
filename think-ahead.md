@@ -77,6 +77,7 @@ found-in-branch: "branch-name-where-spotted"
 date: YYYY-MM-DD HH:mm
 updated: YYYY-MM-DD HH:mm
 resolved-date:
+deferred:
 ---
 
 # Short descriptive title
@@ -117,6 +118,7 @@ What I'd recommend doing about it.
 | `updated` | On every edit | Last time any field or content was changed |
 | `resolved-date` | On resolution | When the observation was closed — left empty until resolved |
 | `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
+| `deferred` | Optional | When `true`, the observation is acknowledged but intentionally postponed — don't re-surface or suggest working on it unless the user explicitly asks |
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
 - When you notice debug logs (`console.log`, `print`, `debugger`, etc.) or commented-out code while working on a task, **do not remove them automatically**
