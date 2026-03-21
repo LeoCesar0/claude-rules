@@ -192,6 +192,13 @@ What I'd recommend doing about it.
 - After completing a large task or switching to a new topic, suggest the user run `/compact` to free up context
 - Don't suggest it mid-task — only at natural breakpoints
 
+## Instruction Writing Style
+- CLAUDE.md and rules files are directives, not tutorials — state the rule and, if non-obvious, a brief reason
+- Don't explain how a tool, pattern, or library works — Claude has training knowledge of languages, frameworks, and common patterns
+- Bad: "Use `.lean()` when querying MongoDB. `.lean()` returns plain JS objects instead of Mongoose documents, which skips hydration and reduces memory overhead, making queries faster"
+- Good: "Use `.lean()` on all MongoDB read queries that don't need Mongoose document methods"
+- Observation files are the exception — include full context, reasoning, and specifics since they document codebase-specific issues that can't be inferred from general knowledge
+
 ## Auto Improvement
 - When the user asks for auto improvement, review the latest changes to identify patterns worth preserving
 - If valuable conventions or patterns emerge, suggest adding them to the project's `CLAUDE.md` for future consistency
