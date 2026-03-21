@@ -113,6 +113,12 @@ What I'd recommend doing about it.
 | `resolved-date` | On resolution | When the observation was closed — left empty until resolved |
 | `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
 
+## Code Cleanup: Suggest, Don't Auto-Clean
+- When you notice debug logs (`console.log`, `print`, `debugger`, etc.) or commented-out code while working on a task, **do not remove them automatically**
+- Instead, after finishing the primary task changes, list what you found and suggest cleaning it — then wait for user confirmation before making any cleanup edits
+- This applies to code in files you're already touching for the task — don't go hunting for cleanup in unrelated files
+- The user may have left debug logs or commented code intentionally (active debugging, A/B testing an approach, etc.) — always ask first
+
 ## Comment the "Why", Not the "What"
 - Don't comment obvious code — the code should speak for itself
 - Always comment when the code does something non-obvious, non-default, or counterintuitive
