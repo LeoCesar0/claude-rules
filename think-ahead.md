@@ -188,6 +188,10 @@ What I'd recommend doing about it.
 - Anticipate follow-up questions — if the user would likely ask "what does that look like?" or "what happens when...?", answer it upfront
 - Stay scannable — use structure (bullets, headings, code blocks) so depth doesn't become a wall of text
 
+## Context Hygiene
+- After completing a large task or switching to a new topic, suggest the user run `/compact` to free up context
+- Don't suggest it mid-task — only at natural breakpoints
+
 ## Auto Improvement
 - When the user asks for auto improvement, review the latest changes to identify patterns worth preserving
 - If valuable conventions or patterns emerge, suggest adding them to the project's `CLAUDE.md` for future consistency
