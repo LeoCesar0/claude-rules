@@ -94,6 +94,11 @@ What could go wrong, what's the impact, why it's worth addressing.
 What I'd recommend doing about it.
 ```
 
+### Before working on an observation
+- Re-read the affected code — don't trust the observation blindly, the codebase may have changed since it was written
+- Verify the issue still exists, the root cause is the same, and the suggested approach still applies
+- If anything is stale, update the observation before starting the fix
+
 ### Observation lifecycle
 - Update the `status` field when observations are addressed (open → in-progress → resolved)
 - Update the `updated` field whenever any change is made to the observation file
