@@ -86,6 +86,38 @@ Use $ARGUMENTS to capture user input.
 
 For more details, see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
 
+## Setting up global agents
+
+Subagents are specialized AI instances that handle specific tasks autonomously. Global agents live in `~/.claude/agents/` and are available across all projects.
+
+### Quick setup
+
+Copy the agent files from this repo into your Claude config:
+
+```bash
+mkdir -p ~/.claude/agents
+cp agents/*.md ~/.claude/agents/
+```
+
+### Included agents
+
+| Agent | Purpose | Model | Trigger |
+|-------|---------|-------|---------|
+| `observer` | Surfaces bugs, smells, performance issues, and security concerns during code work. Documents findings in `docs/observations/` | Haiku | Proactive — auto-delegates when code is read or modified |
+| `impact-check` | Analyzes downstream dependencies of shared code before changes | Haiku | On demand — use when modifying utils, stores, types, or composables |
+
+### How they work
+
+- **observer**: Runs automatically when Claude is working on code. It scans for issues and creates observation files following the format defined in `think-ahead.md`. Read-only analysis + write access only for `docs/observations/`.
+- **impact-check**: Invoked before modifying shared code. It traces all consumers/importers and reports what could break. Read-only — it never modifies code.
+
+### Creating new agents
+
+1. Create a `.md` file in `~/.claude/agents/` (or in this repo's `agents/` folder)
+2. Add YAML frontmatter with `name`, `description`, `tools`, and `model`
+3. Write the system prompt in the body
+4. If stored in this repo, run `cp agents/*.md ~/.claude/agents/` to deploy
+
 ## Key highlights
 
 - **Test-first bug fixes**: Reproduce the bug with a failing test before fixing, then verify
