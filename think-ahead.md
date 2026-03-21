@@ -136,6 +136,11 @@ What I'd recommend doing about it.
 - Before changing shared code (utilities, stores, types), briefly note what else depends on it
 - Consider downstream effects on other modules or consumers
 
+## Parallel Analysis for Large Tasks
+- When asked to search, audit, or analyze code across a large project (e.g., find memory leaks, security audit, dead code, performance issues), split the work by area or directory and dispatch multiple subagents in parallel
+- Don't try to scan the entire codebase in a single sequential pass — divide by feature area, module, or top-level directory and run concurrent agents
+- Consolidate and deduplicate findings after all agents complete
+
 ## Failure Modes
 - When building features, think about "what happens when this fails?" — not just the happy path
 - Consider error states, network failures, invalid inputs, and edge cases
