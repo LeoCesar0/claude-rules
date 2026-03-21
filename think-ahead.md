@@ -73,7 +73,10 @@ type: bug | performance | security | enhancement | smell
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
+found-in-branch: "branch-name-where-spotted"
 date: YYYY-MM-DD HH:mm
+updated: YYYY-MM-DD HH:mm
+resolved-date:
 ---
 
 # Short descriptive title
@@ -93,10 +96,22 @@ What I'd recommend doing about it.
 
 ### Observation lifecycle
 - Update the `status` field when observations are addressed (open → in-progress → resolved)
+- Update the `updated` field whenever any change is made to the observation file
 - When a fix or feature is completed that was triggered by an observation, update the observation doc:
   - Set `status: resolved`
+  - Set `resolved-date` to the current date and time
+  - Update the `updated` field
   - Add a `## Resolution` section at the bottom describing what was done and when
 - After resolving, ask the user whether to keep the observation file for history or delete it
+
+### Frontmatter field reference
+
+| Field | When to set | Description |
+|-------|-------------|-------------|
+| `date` | On creation | When the observation was first discovered |
+| `updated` | On every edit | Last time any field or content was changed |
+| `resolved-date` | On resolution | When the observation was closed — left empty until resolved |
+| `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
 
 ## Comment the "Why", Not the "What"
 - Don't comment obvious code — the code should speak for itself
