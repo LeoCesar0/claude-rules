@@ -39,7 +39,7 @@ Claude Code will automatically load the referenced files into every conversation
 
 ### 3. Exclude this README from instructions
 
-Since Claude Code loads all `.md` files in `~/.claude/rules/` as instructions, this README must be excluded. Create or update `~/.claude/settings.local.json`:
+Since Claude Code loads all `.md` files in `~/.claude/rules/` as instructions, this README must be excluded. Add `claudeMdExcludes` to `~/.claude/settings.json`:
 
 ```json
 {
@@ -51,7 +51,7 @@ Since Claude Code loads all `.md` files in `~/.claude/rules/` as instructions, t
 
 **Important**: Replace `/home/<user>/` with the actual absolute path to your home directory (e.g., `/home/leonardo/`, `/Users/john/`). The pattern matches against absolute paths, so `~` won't work.
 
-If `settings.local.json` already exists, merge the `claudeMdExcludes` array into it.
+If `settings.json` already exists, merge the `claudeMdExcludes` array into it.
 
 ### 4. Deploy agents
 
@@ -260,7 +260,7 @@ Keep the output scannable:
 
 ### 6. Recommended settings
 
-Update `~/.claude/settings.json` with these recommended settings:
+Add `effortLevel` to `~/.claude/settings.json` (the same file where `claudeMdExcludes` was added in Step 3):
 
 ```json
 {
