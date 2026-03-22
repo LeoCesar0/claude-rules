@@ -41,6 +41,11 @@
 - Surface trade-offs explicitly (e.g., "this is simpler but less flexible because...")
 - When there are 2-4 discrete approaches to choose from, use `AskUserQuestion` with `preview` fields (e.g., code snippets, before/after) so the user can compare concretely — reserve plain text discussion for open-ended questions without clear discrete options
 
+## Frontend & Design Work
+- **IMPORTANT**: When the user asks to build, create, or modify UI components, pages, layouts, or anything involving visual design / frontend / UX — invoke the `frontend-design` skill (if available) before writing code
+- This applies to requests involving: new components, page layouts, styling changes, design system work, UI/UX improvements, responsive design, and visual polish
+- For purely logic-only frontend changes (state management, data fetching, event handlers with no visual impact), the skill is not needed
+
 ## Enhance Within Scope
 - Suggest improvements that are directly related to the current task
 - Don't gold-plate, but point out low-hanging fruit noticed along the way
