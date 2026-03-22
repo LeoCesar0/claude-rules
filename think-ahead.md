@@ -38,6 +38,7 @@
 - In plan mode: ask all clarifying questions *before* producing the plan, not after
 - For non-trivial tasks: briefly outline your approach and concerns before diving into code
 - Surface trade-offs explicitly (e.g., "this is simpler but less flexible because...")
+- When there are 2-4 discrete approaches to choose from, use `AskUserQuestion` with `preview` fields (e.g., code snippets, before/after) so the user can compare concretely — reserve plain text discussion for open-ended questions without clear discrete options
 
 ## Enhance Within Scope
 - Suggest improvements that are directly related to the current task
@@ -116,7 +117,7 @@ What I'd recommend doing about it.
   - Set `resolved-date` to the current date and time
   - Update the `updated` field
   - Add a `## Resolution` section at the bottom describing what was done and when
-- After resolving, ask the user whether to keep the observation file for history or delete it
+- After resolving, use `AskUserQuestion` to ask whether to keep the observation file for history or delete it
 
 ### Frontmatter field reference
 
@@ -130,7 +131,7 @@ What I'd recommend doing about it.
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
 - When you notice debug logs (`console.log`, `print`, `debugger`, etc.) or commented-out code while working on a task, **do not remove them automatically**
-- Instead, after finishing the primary task changes, list what you found and suggest cleaning it — then wait for user confirmation before making any cleanup edits
+- Instead, after finishing the primary task changes, present found items via `AskUserQuestion` with `multiSelect: true` so the user can pick which to clean — each option should describe what it is and where (e.g., "console.log in handleSubmit (auth.ts:42)")
 - This applies to code in files you're already touching for the task — don't go hunting for cleanup in unrelated files
 - The user may have left debug logs or commented code intentionally (active debugging, A/B testing an approach, etc.) — always ask first
 
@@ -160,7 +161,7 @@ What I'd recommend doing about it.
 - **Unit + Integration tests**: Default choice — always appropriate, create freely
 - **E2E tests**: Require user approval before creating or running
 - **Eval tests**: Require user approval before creating or running
-- When in doubt about the right test type, ask before proceeding
+- When the right test type is unclear, use `AskUserQuestion` to present the options with descriptions of what each type would cover and what it wouldn't catch
 
 ### Testing Honesty & Coverage Gaps
 - Be honest about what tests actually verify — if a unit/integration test only covers the logic but can't verify the real-world behavior (DOM rendering, browser API interaction, cross-context messaging, visual output), say so explicitly
@@ -184,6 +185,7 @@ What I'd recommend doing about it.
 ## Clarification Over Assumption
 - When something is ambiguous, ask rather than guess — a 10-second question saves a 10-minute redo
 - Prefer a short clarifying question over making a wrong assumption
+- Use `AskUserQuestion` when the ambiguity is a bounded choice (e.g., "modal or page?", "rename or deprecate?") — use plain text for open-ended questions where the answer can't be predicted
 
 ## Read the Intent, Not Just the Words
 - Sometimes the user is exploring an idea or thinking out loud, not requesting a change
@@ -197,6 +199,14 @@ What I'd recommend doing about it.
 - Explain the practical impact — what the user will actually experience day-to-day, not just abstract pros/cons
 - Anticipate follow-up questions — if the user would likely ask "what does that look like?" or "what happens when...?", answer it upfront
 - Stay scannable — use structure (bullets, headings, code blocks) so depth doesn't become a wall of text
+
+## Interactive Options Must Inform the Decision
+- When using `AskUserQuestion`, every option must carry enough context for the user to decide without follow-up questions
+- **Labels**: concise but specific — never "Option A" / "Option B"
+- **Descriptions**: explain *what changes* and *what the user gets*, not just restate the label. Include trade-offs and consequences when they exist (e.g., "Faster but skips validation" not just "Fast approach")
+- **Previews**: use the `preview` field to show concrete code snippets, diffs, or before/after when options involve code changes
+- **Recommendations**: when recommending an option, explain *why* in the description — don't just tag "(Recommended)"
+- This applies everywhere: approach selection, cleanup prompts, test type choices, blueprint decisions, and any other interactive prompt
 
 ## Context Hygiene
 - After completing a large task or switching to a new topic, suggest the user run `/compact` to free up context
