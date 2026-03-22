@@ -184,12 +184,13 @@ Aspects of the target that have no consumers or are only used internally.
 Skills are custom slash commands. They live in `~/.claude/skills/` — each skill is a folder containing a `SKILL.md` file.
 
 ```bash
-mkdir -p ~/.claude/skills/next-steps
+mkdir -p "~/.claude/skills/ahead:next-steps"
+mkdir -p "~/.claude/skills/ahead:blueprints"
 ```
 
-Create the following skill file:
+Create the following skill files:
 
-#### `~/.claude/skills/next-steps/SKILL.md`
+#### `~/.claude/skills/ahead:next-steps/SKILL.md`
 
 ```markdown
 ---
@@ -258,6 +259,141 @@ Keep the output scannable:
 - End with a clear **Recommended action** block: what to work on, which branch, and the first concrete step
 ```
 
+#### `~/.claude/skills/ahead:blueprints/SKILL.md`
+
+```markdown
+---
+description: Create and manage file-based working plans for large, multi-session tasks (design reworks, migrations, major refactors)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git *), Agent, AskUserQuestion
+effort: high
+---
+
+# Blueprints
+
+You are a planning assistant that creates and manages temporary, file-based working documents for large tasks that span multiple conversations.
+
+Blueprints capture scope, current state, target state, decisions, and progress — so each new session can pick up where the last left off. They are **working documents, not documentation** — delete them when the work is done.
+
+## When the user invokes this skill
+
+Determine what they need:
+
+1. **No arguments or a new name** (e.g., `/blueprints design-rework`) → Create a new blueprint
+2. **Existing blueprint name** → Resume work on it
+3. **"status"** → Show overview of all active blueprints
+4. **"cleanup"** → Find and delete completed blueprints
+
+---
+
+## Creating a New Blueprint
+
+### Step 1: Understand the scope
+
+Ask clarifying questions before creating anything:
+- What's the goal?
+- Which areas/pages/modules are involved?
+- Any constraints or priorities?
+
+### Step 2: Analyze
+
+Once the scope is clear:
+1. Read the relevant areas of the codebase to understand current state
+2. For large scopes, use parallel subagents (one per area) to analyze simultaneously
+3. Identify challenges, dependencies between areas, and open questions
+
+### Step 3: Create the blueprint
+
+Create files at `docs/blueprints/<blueprint-name>/`:
+
+**`_overview.md`** (always required):
+
+````markdown
+---
+status: draft | active | completed
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+---
+
+# <Blueprint Name>
+
+## Goal
+What we're trying to achieve and why.
+
+## Scope
+What's included and — just as important — what's explicitly out of scope.
+
+## Areas
+| Area | File | Status |
+|------|------|--------|
+| Homepage | homepage.md | not started |
+| Settings page | settings.md | not started |
+
+## Key Decisions
+Decisions that apply across the whole blueprint — area-specific decisions go in area files.
+
+- **Decision**: what was chosen → **Why**: the reasoning
+````
+
+**Area files** (`<area-name>.md`) — one per area, page, or module:
+
+````markdown
+---
+status: not started | in progress | done
+updated: YYYY-MM-DD
+---
+
+# <Area Name>
+
+## Current State
+What exists today — behavior, structure, pain points.
+
+## Target State
+What this area should look like when done.
+
+## Challenges
+Known blockers, constraints, open questions, risks.
+
+## Decisions
+Choices made for this area and why.
+
+- **Decision**: what was chosen → **Why**: the reasoning
+
+## Tasks
+- [ ] concrete work item
+- [ ] another work item
+````
+
+### Step 4: Confirm with the user
+
+Present the blueprint structure and ask for confirmation before creating files.
+
+---
+
+## Resuming a Blueprint
+
+1. Read `docs/blueprints/<name>/_overview.md` to orient
+2. Check which areas are `in progress` or `not started`
+3. **Revalidate** — scan the actual code to confirm the blueprint is still accurate
+4. Present current status and ask what to focus on this session
+
+## During Work
+
+- Update area file tasks as work is completed
+- Log decisions immediately — the *why* fades fast
+- Update `_overview.md` status table when an area's status changes
+
+## Cleanup
+
+When a blueprint is completed: confirm with the user, then delete the entire `docs/blueprints/<blueprint-name>/` folder. If no other blueprints remain, delete `docs/blueprints/` too.
+
+## Rules
+
+- **Don't over-plan**: Sketch enough to start, refine as you go
+- **Decisions are the core value**: "We chose X over Y because Z" prevents re-litigating settled choices
+- **Revalidate before trusting**: Verify the blueprint matches current code state at session start
+- **Always clean up**: When done, delete the blueprint
+```
+
 ### 6. Recommended settings
 
 Add `effortLevel` to `~/.claude/settings.json` (the same file where `claudeMdExcludes` was added in Step 3):
@@ -284,4 +420,5 @@ This sets Claude Code to use high effort by default. Merge into your existing `s
 - **Production safety**: No commands that could affect production environments
 - **Comment the "why"**: Only comment non-obvious decisions, not what the code does
 - **Impact analysis**: Check downstream dependencies before modifying shared code
-- **Next steps planning**: Use `/next-steps` to get prioritized recommendations based on observations
+- **Next steps planning**: Use `/ahead:next-steps` to get prioritized recommendations based on observations
+- **Blueprints**: Use `/ahead:blueprints` to create temporary file-based plans for large, multi-session tasks
