@@ -8,6 +8,7 @@
 
 ## Global Rules Maintenance
 - After any changes to files in `~/.claude/rules/`, commit and push to the rules repo (origin: https://github.com/LeoCesar0/claude-rules.git)
+- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding setup section in `~/.claude/rules/README.md` with the exact current content of the changed files — the README is the source of truth for new environment setup
 
 ## Production Safety
 - Never run any command, script, or operation that could affect a production environment

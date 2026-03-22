@@ -1,4 +1,4 @@
-# Claude Rules
+# Claude Ahead Rules
 
 Personal global rules for [Claude Code](https://claude.ai/claude-code) that apply across all projects.
 
