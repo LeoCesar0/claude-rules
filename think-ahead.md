@@ -44,6 +44,14 @@
 - Don't gold-plate, but point out low-hanging fruit noticed along the way
 - If you see a pattern that could cause issues later, mention it
 
+## Avoid `any`
+- Use proper types; `any` and `unknown` only as last resort
+- When passing data to functions that don't enforce types at compile time (ORMs, HTTP clients, queue jobs), declare a typed variable first — never pass inline untyped object literals
+
+## DRY Principle
+- Reuse existing code; adjust shared code to fit all scenarios rather than duplicating
+- Reuse existing types; infer from schemas (Zod, etc.) rather than duplicating type definitions
+
 ## Always Surface What You Notice
 - When reading, reviewing, or working on a file or area — whether editing, debugging, reviewing a branch, or analyzing code for any reason — actively notify the user about any bugs, inefficiencies, code smells, or potential issues you spot — even if unrelated to the current task. Always create observation files for issues found; don't just report them in chat.
 - Keep observations brief: what the issue is, where it is, and why it matters
