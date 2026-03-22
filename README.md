@@ -289,10 +289,7 @@ Determine what they need:
 
 ### Step 1: Understand the scope
 
-Ask clarifying questions before creating anything:
-- What's the goal?
-- Which areas/pages/modules are involved?
-- Any constraints or priorities?
+Ask clarifying questions before creating anything. Use `AskUserQuestion` when questions have bounded answers (e.g., scope size, priority order, migration strategy) — use plain text for open-ended context gathering.
 
 ### Step 2: Analyze
 
@@ -345,7 +342,7 @@ updated: YYYY-MM-DD
 # <Area Name>
 
 ## Current State
-What exists today — behavior, structure, pain points.
+What exists today — behavior, structure, pain points. Not code dumps, but enough context to understand the starting point.
 
 ## Target State
 What this area should look like when done.
@@ -354,7 +351,7 @@ What this area should look like when done.
 Known blockers, constraints, open questions, risks.
 
 ## Decisions
-Choices made for this area and why.
+Choices made for this area and why — the most valuable part for future sessions.
 
 - **Decision**: what was chosen → **Why**: the reasoning
 
@@ -365,33 +362,45 @@ Choices made for this area and why.
 
 ### Step 4: Confirm with the user
 
-Present the blueprint structure and ask for confirmation before creating files.
+Use `AskUserQuestion` with the `preview` field to present the proposed blueprint structure — show the `_overview.md` content and area file list in the preview so the user can see exactly what will be created. Options: "Create as-is", "Adjust scope", "Start over".
 
 ---
 
 ## Resuming a Blueprint
 
+When the user references an existing blueprint:
+
 1. Read `docs/blueprints/<name>/_overview.md` to orient
 2. Check which areas are `in progress` or `not started`
-3. **Revalidate** — scan the actual code to confirm the blueprint is still accurate
-4. Present current status and ask what to focus on this session
+3. **Revalidate** — scan the actual code for areas marked in progress to confirm the blueprint is still accurate (code may have changed since last session)
+4. Present current status, then use `AskUserQuestion` to let the user pick which area(s) to focus on this session — list each `not started` / `in progress` area as an option with its current status and a brief description of what's left
+5. Read the relevant area file(s) before starting work
 
 ## During Work
 
+- When starting implementation on a blueprint area, use `TaskCreate` to break the area's task list into trackable tasks — this bridges the blueprint doc and active session work
 - Update area file tasks as work is completed
-- Log decisions immediately — the *why* fades fast
+- Log decisions immediately when made — the *why* fades fast
 - Update `_overview.md` status table when an area's status changes
+- Update the `updated` field in frontmatter on any edit
 
 ## Cleanup
 
-When a blueprint is completed: confirm with the user, then delete the entire `docs/blueprints/<blueprint-name>/` folder. If no other blueprints remain, delete `docs/blueprints/` too.
+When a blueprint reaches `completed` status:
+
+1. Use `AskUserQuestion` to confirm the work is done — show the blueprint's area statuses in the description so the user can verify completeness
+2. Delete the entire `docs/blueprints/<blueprint-name>/` folder
+3. If no other blueprints remain, delete `docs/blueprints/` too
+
+Blueprints are temporary — the code and git history are the permanent record.
 
 ## Rules
 
-- **Don't over-plan**: Sketch enough to start, refine as you go
-- **Decisions are the core value**: "We chose X over Y because Z" prevents re-litigating settled choices
-- **Revalidate before trusting**: Verify the blueprint matches current code state at session start
-- **Always clean up**: When done, delete the blueprint
+- **Don't over-plan**: Sketch enough to start, refine as you go. Never spend a full session just writing blueprint docs.
+- **Decisions are the core value**: Six sessions from now, "we chose X over Y because Z" prevents re-litigating settled choices.
+- **Keep area files focused**: If one gets too long, split it.
+- **Revalidate before trusting**: At the start of each session, verify the blueprint matches the current code state.
+- **Always clean up**: When done, delete the blueprint. No hoarding.
 ```
 
 ### 6. Recommended settings
