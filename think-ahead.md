@@ -84,7 +84,7 @@
 
 ```markdown
 ---
-status: open
+status: open | in-progress | resolved | discarded
 type: bug | performance | security | enhancement | smell | decision
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
@@ -93,6 +93,7 @@ found-in-branch: "branch-name-where-spotted"
 date: YYYY-MM-DD HH:mm
 updated: YYYY-MM-DD HH:mm
 resolved-date:
+discard-reason:
 deferred:
 ---
 
@@ -160,14 +161,19 @@ _Filled when decided:_ what was chosen, why, and any conditions or caveats.
 - If anything is stale, update the observation before starting the fix
 
 ### Observation lifecycle
-- Update the `status` field when observations are addressed (open → in-progress → resolved)
+- Update the `status` field when observations are addressed (open → in-progress → resolved | discarded)
 - Update the `updated` field whenever any change is made to the observation file
 - When a fix or feature is completed that was triggered by an observation, update the observation doc:
   - Set `status: resolved`
   - Set `resolved-date` to the current date and time
   - Update the `updated` field
   - Add a `## Resolution` section at the bottom describing what was done and when
-- After resolving, use `AskUserQuestion` to ask whether to keep the observation file for history or delete it
+- When an observation is intentionally discarded (not worth fixing, no longer relevant, won't-fix, false positive, etc.):
+  - Set `status: discarded`
+  - Set `discard-reason` in frontmatter with a brief explanation of why it was discarded
+  - Update the `updated` field
+  - Keep the file for historical record — discarded observations document what was considered and why it was rejected
+- After resolving or discarding, use `AskUserQuestion` to ask whether to keep the observation file for history or delete it
 - **Decision lifecycle**: open → decided (fill `chosen`, `decided-date`, and `## Decision` section) → implemented (code reflects the choice, add `## Resolution`)
 
 ### Frontmatter field reference
@@ -177,6 +183,7 @@ _Filled when decided:_ what was chosen, why, and any conditions or caveats.
 | `date` | On creation | When the observation was first discovered |
 | `updated` | On every edit | Last time any field or content was changed |
 | `resolved-date` | On resolution | When the observation was closed — left empty until resolved |
+| `discard-reason` | On discard | Brief explanation of why the observation was discarded (e.g., false positive, won't-fix, no longer relevant) — left empty until discarded |
 | `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
 | `deferred` | Optional | When `true`, the observation is acknowledged but intentionally postponed — don't re-surface or suggest working on it unless the user explicitly asks |
 | `options` | On creation (decision only) | List of option labels being considered |
