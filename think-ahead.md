@@ -76,16 +76,15 @@
 | `security` | Something is unsafe or potentially exploitable | Vulnerabilities, unsafe patterns, missing sanitization, exposed secrets. It works but is dangerous. |
 | `enhancement` | Something is missing or incomplete | Missing error handling, incomplete UX flows, missing validation. The feature exists but gaps remain. |
 | `smell` | Something works but is poorly structured | Fragile patterns, dual state systems, tight coupling, dead code, maintenance traps. It works but will cause pain later. |
-| `decision` | Something needs to be resolved before moving forward | Design trade-offs, architectural questions, approach choices that affect multiple files or sessions. Not a defect — a decision point that needs input. |
 
-**When an observation fits multiple types**, use the higher-priority one. Priority order (highest first): **bug > performance > security > enhancement > smell > decision**. For example, a memory leak that also has a code smell → goes in `performance/`.
+**When an observation fits multiple types**, use the higher-priority one. Priority order (highest first): **bug > performance > security > enhancement > smell**. For example, a memory leak that also has a code smell → goes in `performance/`.
 
 ### Observation file format
 
 ```markdown
 ---
 status: open | in-progress | resolved | discarded
-type: bug | performance | security | enhancement | smell | decision
+type: bug | performance | security | enhancement | smell
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
@@ -112,49 +111,6 @@ What could go wrong, what's the impact, why it's worth addressing.
 What I'd recommend doing about it.
 ```
 
-#### Decision file format
-
-For `decision` type observations, use this adapted format:
-
-```markdown
----
-status: open | decided | implemented
-type: decision
-severity: low | medium | high
-found-during: "brief description of the task being worked on"
-found-in: "file/path/where/spotted.ts"
-found-in-branch: "branch-name-where-spotted"
-date: YYYY-MM-DD HH:mm
-updated: YYYY-MM-DD HH:mm
-decided-date:
-options: ["option A label", "option B label"]
-chosen:
----
-
-# Short descriptive title
-
-## Context
-What triggered this decision point and why it can't be deferred.
-
-## Options
-
-### Option 1: label
-What this approach does, its trade-offs, and consequences.
-
-### Option 2: label
-What this approach does, its trade-offs, and consequences.
-
-## Recommendation
-Which option and why — or "none yet" if genuinely undecided.
-
-## Decision
-_Filled when decided:_ what was chosen, why, and any conditions or caveats.
-```
-
-- **Scope gate**: only create `decision` observations for choices that affect more than one file or session — anything smaller should be resolved inline via `AskUserQuestion`
-- **Lifecycle**: open → decided (choice made) → implemented (code reflects the choice)
-- Decisions pair well with blueprints — link to the relevant blueprint if one exists
-
 ### Before working on an observation
 - Re-read the affected code — don't trust the observation blindly, the codebase may have changed since it was written
 - Verify the issue still exists, the root cause is the same, and the suggested approach still applies
@@ -174,7 +130,6 @@ _Filled when decided:_ what was chosen, why, and any conditions or caveats.
   - Update the `updated` field
   - Keep the file for historical record — discarded observations document what was considered and why it was rejected
 - After resolving or discarding, use `AskUserQuestion` to ask whether to keep the observation file for history or delete it
-- **Decision lifecycle**: open → decided (fill `chosen`, `decided-date`, and `## Decision` section) → implemented (code reflects the choice, add `## Resolution`)
 
 ### Frontmatter field reference
 
@@ -186,9 +141,6 @@ _Filled when decided:_ what was chosen, why, and any conditions or caveats.
 | `discard-reason` | On discard | Brief explanation of why the observation was discarded (e.g., false positive, won't-fix, no longer relevant) — left empty until discarded |
 | `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
 | `deferred` | Optional | When `true`, the observation is acknowledged but intentionally postponed — don't re-surface or suggest working on it unless the user explicitly asks |
-| `options` | On creation (decision only) | List of option labels being considered |
-| `chosen` | When decided (decision only) | The option that was picked |
-| `decided-date` | When decided (decision only) | When the decision was made |
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
 - When you notice debug logs (`console.log`, `print`, `debugger`, etc.) or commented-out code while working on a task, **do not remove them automatically**
