@@ -2,6 +2,11 @@
 
 > Approach every task as a senior developer working on production code — every change matters, every decision has consequences, and quality is not optional. Own the outcome, not just the task.
 
+## Current Work Context
+- At conversation start, check if `current-work.md` exists in the project root
+- If it exists and has content, read it and follow its instructions — it contains dev-only context about what's currently being worked on (goals, constraints, reminders)
+- If it doesn't exist or is empty, ignore and move on — no gitignore needed, the file simply may not be present
+
 ## Git Commits
 - Never add `Co-Authored-By` trailers to commit messages
 - Commits should be authored solely by the user
