@@ -93,7 +93,8 @@ type: bug | performance | security | enhancement | smell
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
-found-in-branch: "branch-name-where-spotted"
+working-branch: "branch-being-worked-on-when-spotted"
+found-in-branch: "branch-where-the-issue-originates"
 date: YYYY-MM-DD
 updated: YYYY-MM-DD
 resolved-date:
@@ -144,7 +145,8 @@ What I'd recommend doing about it.
 | `updated` | On every edit | Date of last change to any field or content |
 | `resolved-date` | On resolution | Date the observation was closed — left empty until resolved |
 | `discard-reason` | On discard | Brief explanation of why the observation was discarded (e.g., false positive, won't-fix, no longer relevant) — left empty until discarded |
-| `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
+| `working-branch` | On creation | The branch being worked on when the issue was spotted — provides context for what triggered the discovery |
+| `found-in-branch` | On creation | The branch where the issue actually originates (may differ from `working-branch` if the issue is pre-existing from another branch) |
 | `deferred` | Optional | When `true`, the observation is acknowledged but intentionally postponed — don't re-surface or suggest working on it unless the user explicitly asks |
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
