@@ -94,8 +94,8 @@ severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
 found-in-branch: "branch-name-where-spotted"
-date: YYYY-MM-DD HH:mm
-updated: YYYY-MM-DD HH:mm
+date: YYYY-MM-DD
+updated: YYYY-MM-DD
 resolved-date:
 discard-reason:
 deferred:
@@ -126,7 +126,7 @@ What I'd recommend doing about it.
 - Update the `updated` field whenever any change is made to the observation file
 - When a fix or feature is completed that was triggered by an observation, update the observation doc:
   - Set `status: resolved`
-  - Set `resolved-date` to the current date and time
+  - Set `resolved-date` to the current date
   - Update the `updated` field
   - Add a `## Resolution` section at the bottom describing what was done and when
 - When an observation is intentionally discarded (not worth fixing, no longer relevant, won't-fix, false positive, etc.):
@@ -140,9 +140,9 @@ What I'd recommend doing about it.
 
 | Field | When to set | Description |
 |-------|-------------|-------------|
-| `date` | On creation | When the observation was first discovered |
-| `updated` | On every edit | Last time any field or content was changed |
-| `resolved-date` | On resolution | When the observation was closed — left empty until resolved |
+| `date` | On creation | Date the observation was first discovered |
+| `updated` | On every edit | Date of last change to any field or content |
+| `resolved-date` | On resolution | Date the observation was closed — left empty until resolved |
 | `discard-reason` | On discard | Brief explanation of why the observation was discarded (e.g., false positive, won't-fix, no longer relevant) — left empty until discarded |
 | `found-in-branch` | On creation | The git branch active when the issue was spotted — helps determine if it's pre-existing or newly introduced |
 | `deferred` | Optional | When `true`, the observation is acknowledged but intentionally postponed — don't re-surface or suggest working on it unless the user explicitly asks |
