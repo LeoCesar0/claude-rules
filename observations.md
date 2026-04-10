@@ -25,8 +25,8 @@ type: bug | performance | security | enhancement | smell
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
-working-branch: "branch-being-worked-on-when-spotted"
-found-in-branch: "branch-where-the-issue-originates"
+working-branch: "branch-where-fix-will-be-executed"
+found-in-branch: "branch-where-spotted"
 date: YYYY-MM-DD
 updated: YYYY-MM-DD
 resolved-date:
@@ -55,8 +55,8 @@ Recommended fix or action.
 - `updated` — last change to any field or content
 - `resolved-date` — when closed (empty until resolved)
 - `discard-reason` — why discarded (empty until discarded)
-- `working-branch` — branch being worked on when spotted
-- `found-in-branch` — branch where the issue originates (may differ from working-branch)
+- `working-branch` — branch where the fix will be executed; leave empty if unknown
+- `found-in-branch` — branch where the issue was spotted (usually current branch at discovery)
 - `deferred` — when `true`, postponed intentionally; don't re-surface unless user asks
 
 ## Before working on an observation
