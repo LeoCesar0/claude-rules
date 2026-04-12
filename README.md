@@ -12,6 +12,7 @@ Claude Code loads `.md` files from `~/.claude/rules/` as global instructions for
 |------|---------|
 | `think-ahead.md` | Core development principles — production mindset, testing workflow, communication style, and more |
 | `observations.md` | Observation framework — types, file format, frontmatter fields, and lifecycle |
+| `blueprints.md` | Blueprints framework — structured development workflow (Spec → Plan → Execute → Validate) |
 
 This README also serves as the setup guide for deploying the full environment: rules, agents, and skills.
 
@@ -35,6 +36,7 @@ Create or update `~/.claude/CLAUDE.md`:
 ## Core Principles
 See @~/.claude/rules/think-ahead.md for proactive development approach
 See @~/.claude/rules/observations.md for observation framework (types, format, lifecycle)
+See @~/.claude/rules/blueprints.md for structured development workflow (Spec → Plan → Execute → Validate)
 ```
 
 Claude Code will automatically load the referenced files into every conversation.
@@ -308,6 +310,10 @@ mkdir -p "~/.claude/skills/ahead:next-steps"
 mkdir -p "~/.claude/skills/ahead:blueprints"
 mkdir -p "~/.claude/skills/ahead:instructions"
 mkdir -p "~/.claude/skills/ahead:mr"
+mkdir -p "~/.claude/skills/ahead:spec"
+mkdir -p "~/.claude/skills/ahead:plan"
+mkdir -p "~/.claude/skills/ahead:execute"
+mkdir -p "~/.claude/skills/ahead:validate"
 ```
 
 Create the following skill files:
@@ -385,144 +391,352 @@ Keep the output scannable:
 
 ```markdown
 ---
-description: Create and manage file-based working plans for large, multi-session tasks (design reworks, migrations, major refactors)
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git *), Agent, AskUserQuestion
+description: Show status overview of all blueprints and their features — suggests next actions
+allowed-tools: Read, Glob, Grep, AskUserQuestion
+effort: low
+---
+
+# Blueprints Dashboard
+
+Show current state of all blueprints and suggest next actions.
+
+See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
+
+## Invocation
+
+- `/ahead:blueprints` — overview of all blueprints
+- `/ahead:blueprints <name>` — detailed view of a specific blueprint
+
+## Overview (no args)
+
+1. Glob for `docs/blueprints/*/_overview.md`
+2. Read each overview, extract feature table and status
+3. Present consolidated table across all blueprints
+4. If no blueprints exist, say so and point to `/ahead:spec` to start
+
+## Detail View (with name)
+
+1. Read `docs/blueprints/<name>/_overview.md`
+2. For each feature, check which files exist (`.spec.md`, `.plan.md`, `.validation.md`) and their frontmatter status
+3. Present feature-level detail with next action per feature
+
+## Next Action Logic
+
+Per feature, based on existing files and their status:
+
+| State | Next action |
+|-------|-------------|
+| No spec | `/ahead:spec <blueprint> <feature>` |
+| Spec `draft` | Approve via `/ahead:spec <blueprint> <feature>` |
+| Spec `approved`, no plan | `/ahead:plan <feature>` |
+| Spec `changed`, plan exists | Re-run `/ahead:plan <feature>` (plan may be stale) |
+| Plan `approved` | `/ahead:execute <feature>` |
+| Plan `in-progress` | Resume `/ahead:execute <feature>` |
+| Plan `done`, no validation | `/ahead:validate <feature>` |
+| Validation `pass` | Feature complete |
+| Validation `partial` or `fail` | Address issues, re-run `/ahead:execute` or `/ahead:validate` |
+
+## Constraints
+
+- **Read-only** — never create or modify blueprint files
+- **Concise** — table format, no verbose descriptions
+- **Accurate** — derive status from actual files and frontmatter, not from the overview table (it may be stale)
+```
+
+#### `~/.claude/skills/ahead:spec/SKILL.md`
+
+```markdown
+---
+description: Define feature requirements through conversation — produces .spec.md files within a blueprint
+allowed-tools: Read, Glob, Grep, Bash(git *), Write, Edit, AskUserQuestion, Agent
 effort: high
 ---
 
-# Blueprints
+# Spec Planner
 
-You are a planning assistant that creates and manages temporary, file-based working documents for large tasks that span multiple conversations.
+Create and iterate on feature specifications within the Blueprints framework. Output is `.spec.md` files — functional requirements, design decisions, and scope. No implementation details.
 
-Blueprints capture scope, current state, target state, decisions, and progress — so each new session can pick up where the last left off. They are **working documents, not documentation** — delete them when the work is done.
+See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
 
-## When the user invokes this skill
+## Invocation
 
-Determine what they need:
+- `/ahead:spec` — list blueprints, ask which feature to spec
+- `/ahead:spec <blueprint>` — list features in blueprint, ask which to spec
+- `/ahead:spec <blueprint> <feature>` — create or iterate on a specific feature spec
 
-1. **No arguments or a new name** (e.g., `/blueprints design-rework`) → Create a new blueprint
-2. **Existing blueprint name** → Resume work on it
-3. **"status"** → Show overview of all active blueprints
-4. **"cleanup"** → Find and delete completed blueprints
+## New Blueprint
 
+When `docs/blueprints/<name>/` does not exist:
+
+1. Ask clarifying questions about scope, goals, inclusions/exclusions
+2. Use `AskUserQuestion` with `preview` to present the proposed `_overview.md` — options: "Create", "Adjust", "Cancel"
+3. Create `_overview.md` + first `.spec.md`
+
+## New Feature Spec
+
+When blueprint exists but feature spec does not:
+
+1. Read `_overview.md` for context
+2. Ask clarifying questions about this feature — challenge scope, push back on unnecessary complexity
+3. Read code superficially to validate premises — don't deep-dive into architecture
+4. Draft `.spec.md`
+5. Present draft via `AskUserQuestion` with `preview` — options: "Approve", "Iterate", "Discard"
+6. On approve: set `status: approved`, update `_overview.md` feature table
+
+## Iterate Existing Spec
+
+1. Read current `.spec.md`
+2. If `.plan.md` exists, warn: changes set spec status to `changed` (plan may be stale)
+3. Discuss and apply changes
+4. Re-present for approval
+
+## Bug Specs
+
+When the feature describes a bug fix:
+
+- Add `## Reproduction` section: expected vs actual behavior, conditions to trigger
+- Set `reproduction-test: required` in frontmatter
+- Focus on observable behavior, not suspected cause — the plan stage investigates
+
+## Findings
+
+See `~/.claude/rules/blueprints.md` § Issue Disposition for the full protocol.
+
+- In-scope issues with requirements → iterate the spec
+- Out-of-scope bugs/smells noticed while reading code → create observation files
+- Can't produce a coherent spec (contradictory goals, blocked by external decision) → `## Blockers` section in the spec, stop
+
+## Constraints
+
+- **No implementation details** — describe WHAT, not HOW. No file paths, no code snippets, no step-by-step technical plans.
+- **Shallow code reading only** — validate assumptions ("does this component exist?"), not design solutions
+- **One feature per spec** — if scope is too large, suggest splitting into multiple features
+- **Challenge the user** — question scope, push back on over-engineering, ask "do you actually need this?"
+```
+
+#### `~/.claude/skills/ahead:plan/SKILL.md`
+
+```markdown
+---
+description: Analyze codebase and produce technical implementation plans (.plan.md) from approved specs
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion, Agent
+effort: high
 ---
 
-## Creating a New Blueprint
+# Tech Architect
 
-### Step 1: Understand the scope
+Produce technical implementation plans from approved specs. Read the spec, analyze the codebase deeply, and output a `.plan.md` with concrete steps.
 
-Ask clarifying questions before creating anything. Use `AskUserQuestion` when questions have bounded answers (e.g., scope size, priority order, migration strategy) — use plain text for open-ended context gathering.
+See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
 
-### Step 2: Analyze
+## Invocation
 
-Once the scope is clear:
-1. Read the relevant areas of the codebase to understand current state
-2. For large scopes, use parallel subagents (one per area) to analyze simultaneously
-3. Identify challenges, dependencies between areas, and open questions
+- `/ahead:plan` — list features with approved specs that lack plans
+- `/ahead:plan <feature>` — create or update plan for a specific feature
 
-### Step 3: Create the blueprint
+## Pre-checks
 
-Create files at `docs/blueprints/<blueprint-name>/`:
+1. Read `_overview.md` to orient
+2. Read the feature's `.spec.md`
+3. Verify spec `status: approved` — if `draft`, stop and direct user to `/ahead:spec`
+4. If `.plan.md` exists and spec `status: changed` — flag which requirements changed, ask: "Update existing plan" or "Re-plan from scratch"
 
-**`_overview.md`** (always required):
+## Reproduction Test
 
-````markdown
+When spec has `reproduction-test: required`, **before writing the plan**:
+
+1. Write a test that reproduces the bug described in the spec's `## Reproduction` section
+2. Run the test — confirm it **fails**
+3. If the test passes: stop and report — bug may be fixed or reproduction is wrong
+4. Commit the test: `test: reproduce <brief bug description>`
+5. Use what the test revealed to inform the plan
+
+## Analysis
+
+1. Deep-read all code areas relevant to the spec's requirements
+2. For large scopes, dispatch parallel subagents (one per area)
+3. Map dependencies, existing patterns, potential conflicts
+4. Note surprises — things the spec assumed that don't match reality
+
+## Write the Plan
+
+Create `<N>-<slug>.plan.md`:
+
+- **Analysis**: findings from codebase reading, validated/invalidated assumptions from spec
+- **Steps**: numbered, each with sub-task checkboxes and specific files involved
+- **Files Created / Modified**: full paths with brief description
+- **Execution Order**: which steps are parallel, which are sequential, and why
+- **Risks / Open Questions**: things that might go wrong or need decisions during execution
+
+If reproduction test was written, record it as **Step 0** (already completed) with commit reference.
+
+Present plan via `AskUserQuestion` with `preview` — options: "Approve", "Adjust", "Re-plan". On approve: set `status: approved`.
+
+## Findings
+
+See `~/.claude/rules/blueprints.md` § Issue Disposition for the full protocol.
+
+- In-scope notes (analysis surprises, pattern references) → `## Analysis` or step body
+- Spec has problems (contradictions, missing info, infeasible requirements) → stop, report to user, do not fix the spec silently
+- Out-of-scope bugs/smells found during codebase analysis → create observation files
+- Can't produce a coherent plan (architectural blocker, unresolvable dependency) → `## Blockers` section, stop
+
+## Constraints
+
+- **Do not alter the spec** — if requirements have problems, flag them to the user. Don't silently adjust scope.
+- **No production code** — write reproduction tests only, not implementation code
+- **Concrete steps** — every step names specific files and describes specific changes. "Refactor the component" is not a valid step.
+- **Reference existing patterns** — when the codebase has a pattern for what's needed, reference it (file + line) instead of describing from scratch
+```
+
+#### `~/.claude/skills/ahead:execute/SKILL.md`
+
+```markdown
 ---
-status: draft | active | completed
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
----
-
-# <Blueprint Name>
-
-## Goal
-What we're trying to achieve and why.
-
-## Scope
-What's included and — just as important — what's explicitly out of scope.
-
-## Areas
-| Area | File | Status |
-|------|------|--------|
-| Homepage | homepage.md | not started |
-| Settings page | settings.md | not started |
-
-## Key Decisions
-Decisions that apply across the whole blueprint — area-specific decisions go in area files.
-
-- **Decision**: what was chosen → **Why**: the reasoning
-````
-
-**Area files** (`<area-name>.md`) — one per area, page, or module:
-
-````markdown
----
-status: not started | in progress | done
-updated: YYYY-MM-DD
----
-
-# <Area Name>
-
-## Current State
-What exists today — behavior, structure, pain points. Not code dumps, but enough context to understand the starting point.
-
-## Target State
-What this area should look like when done.
-
-## Challenges
-Known blockers, constraints, open questions, risks.
-
-## Decisions
-Choices made for this area and why — the most valuable part for future sessions.
-
-- **Decision**: what was chosen → **Why**: the reasoning
-
-## Tasks
-- [ ] concrete work item
-- [ ] another work item
-````
-
-### Step 4: Confirm with the user
-
-Use `AskUserQuestion` with the `preview` field to present the proposed blueprint structure — show the `_overview.md` content and area file list in the preview so the user can see exactly what will be created. Options: "Create as-is", "Adjust scope", "Start over".
-
+description: Implement features by following approved spec + plan step by step
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent, AskUserQuestion
+effort: high
 ---
 
-## Resuming a Blueprint
+# Executor
 
-When the user references an existing blueprint:
+Implement features by following the approved spec and plan. Write code, run tests, track progress.
 
-1. Read `docs/blueprints/<name>/_overview.md` to orient
-2. Check which areas are `in progress` or `not started`
-3. **Revalidate** — scan the actual code for areas marked in progress to confirm the blueprint is still accurate (code may have changed since last session)
-4. Present current status, then use `AskUserQuestion` to let the user pick which area(s) to focus on this session — list each `not started` / `in progress` area as an option with its current status and a brief description of what's left
-5. Read the relevant area file(s) before starting work
+See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
 
-## During Work
+## Invocation
 
-- When starting implementation on a blueprint area, use `TaskCreate` to break the area's task list into trackable tasks — this bridges the blueprint doc and active session work
-- Update area file tasks as work is completed
-- Log decisions immediately when made — the *why* fades fast
-- Update `_overview.md` status table when an area's status changes
-- Update the `updated` field in frontmatter on any edit
+- `/ahead:execute` — list features with approved plans ready for execution
+- `/ahead:execute <feature>` — execute a specific feature
+- `/ahead:execute <feature> step <N>` — execute a specific step
 
-## Cleanup
+## Pre-checks
 
-When a blueprint reaches `completed` status:
+1. Read `_overview.md`, `.spec.md`, and `.plan.md`
+2. Verify plan `status: approved` or `in-progress`
+3. If `in-progress`, check which steps are done (checkboxes) and resume from next incomplete step
+4. Set plan `status: in-progress` on first execution
 
-1. Use `AskUserQuestion` to confirm the work is done — show the blueprint's area statuses in the description so the user can verify completeness
-2. Delete the entire `docs/blueprints/<blueprint-name>/` folder
-3. If no other blueprints remain, delete `docs/blueprints/` too
+## Execution
 
-Blueprints are temporary — the code and git history are the permanent record.
+1. Present uncompleted steps via `AskUserQuestion` — ask which step(s) to execute this session
+2. For each step:
+   a. Read the step's sub-tasks
+   b. Implement each sub-task
+   c. Mark checkboxes in `.plan.md` as done
+   d. Run relevant tests after completing the step
+3. Commit per step (or logical sub-group within a step)
+4. Update `_overview.md` feature table after completing steps
 
-## Rules
+## Deviations
 
-- **Don't over-plan**: Sketch enough to start, refine as you go. Never spend a full session just writing blueprint docs.
-- **Decisions are the core value**: Six sessions from now, "we chose X over Y because Z" prevents re-litigating settled choices.
-- **Keep area files focused**: If one gets too long, split it.
-- **Revalidate before trusting**: At the start of each session, verify the blueprint matches the current code state.
-- **Always clean up**: When done, delete the blueprint. No hoarding.
+When the plan doesn't match reality (code changed, approach won't work):
+
+1. Document the deviation in `.plan.md` under the affected step — what changed and why
+2. Continue with the adjusted approach
+3. If requirements can't be met, stop and flag to user — **do not alter the spec**
+
+## Findings
+
+See `~/.claude/rules/blueprints.md` § Issue Disposition for the full protocol.
+
+- In-scope deviations (plan step needed adjustment) → document in `.plan.md` under the affected step
+- Out-of-scope bugs/smells in adjacent code → create observation files (don't fix silently)
+- Requirement can't be met as specified → stop, flag to user, do not alter the spec
+- Step can't proceed (missing dependency, broken tooling, architectural blocker) → `## Blockers` section in `.plan.md`, stop
+
+## Constraints
+
+- **Follow the plan** — don't skip steps, don't reorder without documenting why
+- **Spec is source of truth** for WHAT to build — plan is the guide for HOW
+- **Track progress** — update checkboxes in `.plan.md` as sub-tasks complete
+- **Run tests** — type checks and relevant test suites after each step
+- **One commit per step** — not one giant commit at the end
+```
+
+#### `~/.claude/skills/ahead:validate/SKILL.md`
+
+```markdown
+---
+description: Verify implementation against spec and plan — produces .validation.md report
+allowed-tools: Read, Glob, Grep, Bash, Agent, Write, AskUserQuestion
+effort: high
+---
+
+# Validator
+
+Verify that the implementation matches the spec and plan. Check requirements, run tests, produce a validation report.
+
+See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
+
+## Invocation
+
+- `/ahead:validate` — list features with plans in-progress or done, ready for validation
+- `/ahead:validate <feature>` — validate a specific feature
+
+## Pre-checks
+
+1. Read `_overview.md`, `.spec.md`, `.plan.md`
+2. Verify plan `status: in-progress | done`
+
+## Validation
+
+### Requirements check
+
+For each requirement in the spec:
+- Read the relevant implementation code
+- Verify the requirement is satisfied
+- Mark as **pass** / **partial** / **fail** with concrete evidence (file, line, test output)
+
+### Plan adherence
+
+For each step in the plan:
+- Were all sub-tasks completed?
+- Were deviations documented and justified?
+- Were listed files actually created/modified?
+
+### Quality checks
+
+- Run type checking
+- Run test suites
+- Check for regressions in areas adjacent to the changes
+- If reproduction test exists (Step 0), verify it now **passes**
+
+### Write report
+
+Create `<N>-<slug>.validation.md` with:
+- `## Requirements Check` — table per spec requirement
+- `## Plan Adherence` — step-by-step review
+- `## Issues Found` — in-scope issues (affect the verdict)
+- `## Blockers` — critical failures that prevent `status: done` (only present when verdict is `fail`)
+- `## Verdict` — pass / partial / fail with summary
+
+## Verdict
+
+- **pass** — all requirements met, tests pass, no issues
+- **partial** — some requirements incomplete or minor issues found
+- **fail** — critical requirements missing or broken
+
+Present report via `AskUserQuestion`. Options based on verdict:
+- pass: "Mark feature as done", "Run additional checks"
+- partial/fail: "Create tasks for remaining work", "Re-execute specific steps"
+
+On pass + user confirms: set plan `status: done`, update `_overview.md` feature table.
+
+## Findings
+
+See `~/.claude/rules/blueprints.md` § Issue Disposition for the full protocol.
+
+- In-scope issues (requirements unmet, plan deviations, regressions in feature code) → `## Issues Found` in `.validation.md`
+- Critical in-scope failures → `## Blockers` in `.validation.md`, verdict `fail`, plan stays `in-progress` (never `done`)
+- Out-of-scope bugs/smells noticed during validation → create observation files
+- Unverifiable requirements (browser-only, external API, etc.) → mark as `unverified` in the requirements table with the reason
+
+## Constraints
+
+- **Read-only** — do not modify implementation code, only create the validation report
+- **Evidence-based** — every pass/fail references specific code, test output, or observable behavior
+- **No assumptions** — if you can't verify a requirement (needs browser, external API, etc.), mark it as "unverified" with the reason
 ```
 
 #### `~/.claude/skills/ahead:instructions/SKILL.md`
@@ -727,6 +941,7 @@ This sets Claude Code to use high effort by default. Merge into your existing `s
 - **Comment the "why"**: Only comment non-obvious decisions, not what the code does
 - **Impact analysis**: Check downstream dependencies before modifying shared code
 - **Next steps planning**: Use `/ahead:next-steps` to get prioritized recommendations based on observations
-- **Blueprints**: Use `/ahead:blueprints` to create temporary file-based plans for large, multi-session tasks
+- **Blueprints workflow**: Structured Spec → Plan → Execute → Validate pipeline via `/ahead:spec`, `/ahead:plan`, `/ahead:execute`, `/ahead:validate`
+- **Blueprint status**: Use `/ahead:blueprints` to see status overview and next actions across all blueprints
 - **Instruction writing**: Use `/ahead:instructions` to write or review Claude-facing instruction files
 - **Merge Request drafts**: Use `/ahead:mr` to generate a `mr.md` draft from the current branch's net changes
