@@ -539,7 +539,20 @@ See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
 1. Read `_overview.md` to orient
 2. Read the feature's `.spec.md`
 3. Verify spec `status: approved` — if `draft`, stop and direct user to `/ahead:spec`
-4. If `.plan.md` exists and spec `status: changed` — flag which requirements changed, ask: "Update existing plan" or "Re-plan from scratch"
+4. If `.plan.md` already exists, determine mode:
+   - **Spec `status: changed`** → flag which requirements changed, ask: "Update existing plan" or "Re-plan from scratch"
+   - **Validation failed** (read `.validation.md`) → revise mode: edit affected steps in place, add entry to `## Deviations` with what failed and the new approach
+   - **User explicitly asks to re-plan** → revise or from-scratch based on their intent
+
+## Revising an existing plan
+
+When revising (not creating from scratch):
+
+1. Read the current `.plan.md` and `.validation.md` if present
+2. Identify which steps need to change and why
+3. **Edit in place** — rewrite affected steps to reflect the new approach. Do not keep superseded steps visible.
+4. Add one entry to `## Deviations` documenting: what was originally attempted, why it failed, what's being done instead
+5. Keep unrelated steps untouched
 
 ## Reproduction Test
 
@@ -822,11 +835,26 @@ Create `<N>-<slug>.validation.md` with:
 - **partial** — some requirements incomplete or minor issues found
 - **fail** — critical requirements missing or broken
 
-Present report via `AskUserQuestion`. Options based on verdict:
-- pass: "Mark feature as done", "Run additional checks"
-- partial/fail: "Create tasks for remaining work", "Re-execute specific steps"
+## Finalization
 
-On pass + user confirms: set plan `status: done`, update `_overview.md` feature table.
+After writing the report, you **must** present `AskUserQuestion` with options matching the verdict. This is not optional — it prevents features from being left stranded in `in-progress` state.
+
+### When verdict = pass
+
+Options:
+- **Mark feature as done** (recommended) — sets plan `status: done`, updates `_overview.md` feature table, bumps `updated` in both
+- **Run additional checks** — stay in validation, expand coverage
+- **Keep in-progress** — user wants to verify manually before marking done
+
+Never silently mark done. Never skip this question on pass.
+
+### When verdict = partial or fail
+
+Plan stays `in-progress` — never `done`. Options:
+- **Small fix** — executor resumes via `/ahead:execute`, editing the plan in place for affected steps
+- **Revise plan** — re-run `/ahead:plan <feature>` to iterate on the plan (plan file kept, content edited, `## Deviations` gains an entry)
+- **Re-plan from scratch** — archive current plan, re-plan from spec (rare, for cases where the whole approach was wrong)
+- **Address later** — log a task or observation, leave feature in-progress
 
 ## Findings
 

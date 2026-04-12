@@ -141,6 +141,44 @@ created: YYYY-MM-DD
 - Plan does not alter requirements — flag problems, don't fix them
 - Execute follows the plan — document deviations in the plan file
 
+## Document Updates
+
+Each stage updates specific files. On any edit, also bump the `updated` field in the file's frontmatter to today's date.
+
+| File | Updated by | When |
+|------|------------|------|
+| `_overview.md` feature table | spec, plan, execute, validate | Any status transition on a feature |
+| `_overview.md` decisions | spec, plan | Cross-feature decision emerges |
+| `.spec.md` | spec | Create; iterate; mark `changed` if edited after plan exists |
+| `.plan.md` (main content) | plan | Create; re-plan when spec changes |
+| `.plan.md` checkboxes | execute | As each sub-task completes |
+| `.plan.md` `## Deviations` | execute; plan (on revision) | Hard deviation found; plan edited after validation failure |
+| `.plan.md` status | execute (→ in-progress), validate (→ done) | Stage transitions |
+| `.validation.md` | validate | Create once per validation run |
+| Observation files | any stage | Out-of-scope issue found — see `observations.md` |
+
+## Plan Revisions
+
+When the plan needs to change (validator failed, execute hit blockers, approach proved wrong):
+
+- **Edit the plan in place** — keep it enxuto and current. Rewrite the affected steps to reflect the new approach.
+- **Log the learning** in `## Deviations` — one entry per significant iteration. Entry format:
+  - Date
+  - What was originally attempted
+  - Why it didn't work
+  - What's being done instead
+
+Example entry:
+
+```
+### 2026-04-12: Tried direct SQL, switched to Prisma
+Step 3 originally used raw SQL for perf. Query complexity made it
+unmaintainable. Switched to Prisma with indexes on foo/bar — perf is
+acceptable.
+```
+
+Do not keep superseded steps visible — git preserves history, the plan stays lean. The `## Deviations` log is the human-readable "why the plan evolved" record.
+
 ## Issue Disposition
 
 When any stage finds an issue, classify and route it:
