@@ -82,6 +82,7 @@ updated: YYYY-MM-DD
 # Feature Name — Implementation Plan
 
 ## Analysis
+## Reuse Requirements
 ## Test Strategy
 ## Steps
 ### Step N: Name
@@ -90,7 +91,10 @@ updated: YYYY-MM-DD
 ## Files Modified
 ## Execution Order
 ## Risks / Open Questions
+## Deviations
 ```
+
+`## Reuse Requirements` lists existing patterns/services/utilities that MUST be reused — hard items. `## Deviations` is populated by the executor when a hard item in the plan cannot be followed as written; soft adaptations don't go here.
 
 ### `<N>-<slug>.validation.md`
 

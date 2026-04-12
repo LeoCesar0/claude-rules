@@ -587,6 +587,8 @@ Use the `chaos-agent` subagent via the `Agent` tool when the feature has:
 Create `<N>-<slug>.plan.md`:
 
 - **Analysis**: findings from codebase reading, validated/invalidated assumptions from spec
+- **Reuse Requirements**: existing patterns, services, utilities, and types the implementation MUST reuse (not reinvent) — see below
+- **Test Strategy**: what gets tested and how (see Test Strategy section)
 - **Steps**: numbered, each with sub-task checkboxes and specific files involved
 - **Files Created / Modified**: full paths with brief description
 - **Execution Order**: which steps are parallel, which are sequential, and why
@@ -595,6 +597,50 @@ Create `<N>-<slug>.plan.md`:
 If reproduction test was written, record it as **Step 0** (already completed) with commit reference.
 
 Present plan via `AskUserQuestion` with `preview` — options: "Approve", "Adjust", "Re-plan". On approve: set `status: approved`.
+
+## Plan Granularity
+
+The plan sketches paths and requirements — it is **not a script**. Plan owns architectural decisions; the executor owns local implementation.
+
+### Hard (executor follows or stops and reports)
+
+- Files to create/modify
+- Libraries and dependencies chosen
+- Existing patterns/services/utilities to reuse (Reuse Requirements)
+- Public interfaces — exported function signatures, shared type shapes, route contracts
+- Test Strategy
+
+### Soft (executor adapts without ceremony)
+
+- Internal implementation approach — loops, private data structures, early returns
+- Local variable naming, formatting, import organization
+- Sub-task decomposition and ordering within a step
+- Private types not exported
+
+### What the plan avoids
+
+- Pseudo-code, variable names, loop structure, internal data structure choices unless the choice is architectural (e.g., "Map for O(1) lookup under high read pressure" is architectural; "use a for loop" is not)
+- Over-specifying code that the executor can reason about locally
+
+## Reuse Requirements
+
+This section is the plan's main quality lever. Before writing steps, identify:
+
+- Existing services/utilities that do part of what the feature needs (use them, don't duplicate)
+- Established patterns in the codebase for the kind of work being planned (routes, services, stores, error handling, logging)
+- Types and schemas already defined (extend/compose, don't re-declare)
+
+List each reuse requirement with a file/path reference. Example:
+
+````
+## Reuse Requirements
+- Use `LLMService` in `src/services/llm/` — do not create a new HTTP client
+- Route follows pattern in `src/routes/chat/*` — validation middleware + response shape
+- Errors via `AppError` in `src/errors/`
+- Logging via `logger.child({ service: 'chatbot' })`
+````
+
+Reuse requirements are **hard** — executor does not reinvent what already exists without approval.
 
 ## Findings
 
@@ -652,13 +698,39 @@ See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
 3. Commit per step (or logical sub-group within a step)
 4. Update `_overview.md` feature table after completing steps
 
+## Plan Authority
+
+The plan has two levels of authority — treat them differently.
+
+### Hard (follow strictly or stop)
+
+- Files to create/modify
+- Libraries and dependencies
+- Reuse Requirements — use the existing patterns/services the plan named
+- Public interfaces — exported signatures, shared types, route contracts
+- Test Strategy
+
+If reality contradicts a hard item, **stop** and handle as a deviation (below).
+
+### Soft (adapt freely)
+
+- Internal implementation — loops, private data structures, local variable names
+- Sub-task ordering within a step
+- Local refactors that improve the code without changing interfaces or reuse
+
+Adapt soft items without ceremony. Note significant adaptations in `.plan.md` only if they might surprise someone reading later.
+
 ## Deviations
 
-When the plan doesn't match reality (code changed, approach won't work):
+When a **hard** item in the plan can't be followed:
 
-1. Document the deviation in `.plan.md` under the affected step — what changed and why
-2. Continue with the adjusted approach
-3. If requirements can't be met, stop and flag to user — **do not alter the spec**
+1. Stop execution on that step
+2. Document under `## Deviations` in `.plan.md`: what the plan said, what's actually needed, why
+3. Present to user via `AskUserQuestion`:
+   - **Follow plan anyway** — accept the friction
+   - **Accept deviation** — update the plan, proceed
+   - **Re-plan** — hand back to `/ahead:plan` to fix
+4. If requirements can't be met at all, stop and flag to user — **do not alter the spec**
 
 ## Findings
 
@@ -716,8 +788,16 @@ For each requirement in the spec:
 
 For each step in the plan:
 - Were all sub-tasks completed?
-- Were deviations documented and justified?
+- Were **hard deviations** (files changed, libs swapped, interfaces altered, Reuse Requirements ignored) documented under `## Deviations`? Undocumented hard deviations are issues.
+- **Soft deviations** (local implementation, naming, structure) are not flagged — executor owns that layer.
 - Were listed files actually created/modified?
+
+### Reuse Requirements check
+
+For each item in the plan's `## Reuse Requirements`:
+- Verify the existing pattern/service/utility was used in the implementation
+- If not used, check if a deviation was documented
+- Undocumented reuse violations are issues — the implementation reinvented something it shouldn't have
 
 ### Quality checks
 
