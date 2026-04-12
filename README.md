@@ -558,6 +558,30 @@ When spec has `reproduction-test: required`, **before writing the plan**:
 3. Map dependencies, existing patterns, potential conflicts
 4. Note surprises — things the spec assumed that don't match reality
 
+## Test Strategy
+
+Every plan includes a `## Test Strategy` section specifying:
+
+- What will be tested and at what level — unit / integration / manual / E2E
+- What won't be tested and why — visual, browser-only, external API, etc.
+- Whether `chaos-agent` will be spawned for adversarial coverage
+
+Steps in the plan include **test sub-tasks alongside implementation sub-tasks**. Mark which ones the plan stage writes itself and which the executor writes.
+
+### Writing tests during planning
+
+You may write tests during planning when doing so verifies architectural assumptions, reveals actual behavior, or scaffolds the feature. Fix issues discovered while writing tests — this is scoped to what the tests reveal, not general feature implementation. Commit tests separately: `test: <what it covers>`.
+
+### Spawning chaos-agent
+
+Use the `chaos-agent` subagent via the `Agent` tool when the feature has:
+- Many boundary conditions or edge cases
+- Complex state transitions
+- High-risk data handling (auth, payments, user data)
+- Inputs from external or untrusted sources
+
+`chaos-agent` writes adversarial tests — it tries to break the code. Run it during analysis and use its findings to strengthen the plan.
+
 ## Write the Plan
 
 Create `<N>-<slug>.plan.md`:
@@ -584,7 +608,7 @@ See `~/.claude/rules/blueprints.md` § Issue Disposition for the full protocol.
 ## Constraints
 
 - **Do not alter the spec** — if requirements have problems, flag them to the user. Don't silently adjust scope.
-- **No production code** — write reproduction tests only, not implementation code
+- **Scoped code changes only** — write tests freely; fix only issues discovered during test writing or architectural verification. Main feature implementation belongs to execute.
 - **Concrete steps** — every step names specific files and describes specific changes. "Refactor the component" is not a valid step.
 - **Reference existing patterns** — when the codebase has a pattern for what's needed, reference it (file + line) instead of describing from scratch
 ```
@@ -621,8 +645,8 @@ See `~/.claude/rules/blueprints.md` for document formats and lifecycle.
 
 1. Present uncompleted steps via `AskUserQuestion` — ask which step(s) to execute this session
 2. For each step:
-   a. Read the step's sub-tasks
-   b. Implement each sub-task
+   a. Read the step's sub-tasks (some may already be completed by the plan stage — tests, fixes, scaffolding)
+   b. Implement each uncompleted sub-task, including test sub-tasks
    c. Mark checkboxes in `.plan.md` as done
    d. Run relevant tests after completing the step
 3. Commit per step (or logical sub-group within a step)
@@ -699,6 +723,7 @@ For each step in the plan:
 
 - Run type checking
 - Run test suites
+- **Test strategy adherence**: verify tests exist for everything the plan's `## Test Strategy` said would be covered, at the specified level
 - Check for regressions in areas adjacent to the changes
 - If reproduction test exists (Step 0), verify it now **passes**
 

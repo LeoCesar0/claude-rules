@@ -82,6 +82,7 @@ updated: YYYY-MM-DD
 # Feature Name — Implementation Plan
 
 ## Analysis
+## Test Strategy
 ## Steps
 ### Step N: Name
 - [ ] sub-task
@@ -178,6 +179,22 @@ When spec has `reproduction-test: required`:
 5. Validate checks that the Step 0 test now passes
 
 See `think-ahead.md` § Bug Fix Workflow for the underlying principle.
+
+## Test Strategy
+
+The **plan** stage owns test strategy for the feature.
+
+Every `.plan.md` includes a `## Test Strategy` section specifying:
+- What will be tested, at what level (unit / integration / manual / E2E)
+- What won't be tested and why (environment-specific, visual, external)
+- Whether `chaos-agent` subagent will be invoked for adversarial coverage
+
+Steps in the plan include **test sub-tasks alongside implementation sub-tasks**. Test sub-tasks the plan wrote itself are marked complete; the rest are written by execute.
+
+The plan stage may:
+- Write tests as part of verification (not just reproduction tests for bugs)
+- Fix issues discovered while writing tests — scoped to what the tests reveal, not general implementation
+- Spawn `chaos-agent` (see `~/.claude/agents/chaos-agent.md`) when the feature has many edge cases, complex state transitions, or high-risk data handling
 
 ## Skills
 
