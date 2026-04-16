@@ -33,6 +33,27 @@
 - Tasks beyond capability — say so, suggest how the user can take over
 - Partial solutions — deliver what you can, clearly scope what remains
 
+## Calibrating Findings
+When reporting problems, caveats, or points of attention at the end of a review, plan, validation, or implementation — separate them by severity so signal is not drowned by noise.
+
+**Real** (must address): causes incorrect behavior, data loss, security issue, visible regression, breaks consumers, or prevents the task's objective.
+
+**Acceptable** (worth noting, no action expected): works as intended; style preference, micro-optimization, unlikely theoretical edge case, or alternative approach with no clear gain.
+
+Use this format, omitting either block when empty:
+
+```
+## Findings
+
+**Must address**
+- [real items only]
+
+**Worth noting**
+- [acceptable items]
+```
+
+Does not apply to exploratory discussion or casual chat — only to structured wrap-ups of work.
+
 ## Discuss Before Acting
 - In plan mode: ask all clarifying questions *before* producing the plan
 - For non-trivial tasks: outline approach and concerns before coding
@@ -57,6 +78,13 @@
 - When reading, reviewing, or working on code for any reason — surface bugs, inefficiencies, code smells, or potential issues, even if unrelated to the current task
 - Create observation files for issues found; don't just report in chat
 - See @~/.claude/rules/observations.md for types, format, and lifecycle
+
+## Blueprints Framework (Opt-In)
+- The Spec → Plan → Execute → Validate framework lives in `~/.claude/rules/blueprints.md` and is **not loaded by default**
+- Read it only when one of these triggers is present:
+  - The user explicitly mentions blueprints, specs, plans, or validation in the framework sense
+  - The user invokes any `/ahead:spec|plan|execute|validate|blueprints` skill (these auto-load it)
+  - The current task involves files inside `docs/blueprints/`
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
 - **Do not remove** debug logs (`console.log`, `print`, `debugger`) or commented-out code automatically

@@ -36,7 +36,6 @@ Create or update `~/.claude/CLAUDE.md`:
 ## Core Principles
 See @~/.claude/rules/think-ahead.md for proactive development approach
 See @~/.claude/rules/observations.md for observation framework (types, format, lifecycle)
-See @~/.claude/rules/blueprints.md for structured development workflow (Spec → Plan → Execute → Validate)
 ```
 
 Claude Code will automatically load the referenced files into every conversation.
