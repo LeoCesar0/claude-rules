@@ -32,6 +32,9 @@ updated: YYYY-MM-DD
 resolved-date:
 discard-reason:
 deferred:
+deferred-reason:
+related-commits:
+related-observations:
 ---
 
 # Short descriptive title
@@ -58,8 +61,13 @@ Recommended fix or action.
 - `working-branch` — branch where the fix will be executed; leave empty if unknown
 - `found-in-branch` — branch where the issue was spotted (usually current branch at discovery)
 - `deferred` — when `true`, postponed intentionally; don't re-surface unless user asks
+- `deferred-reason` — brief explanation of why it was deferred (empty until deferred)
+- `related-commits` — list of commit SHAs that contributed to or addressed this observation; optional
+- `related-observations` — list of paths to other observation files with direct impact on this one; optional
 
 ## Before working on an observation
+
+Observations are investigation tools, not source of truth — they are a snapshot of what was true when written. The code is the source of truth.
 
 - Re-read the affected code — the codebase may have changed since the observation was written
 - Verify the issue still exists and the suggested approach still applies
@@ -76,5 +84,3 @@ Status transitions: open → in-progress → resolved | discarded
 **On discard:**
 - Set `status: discarded`, `discard-reason` with brief explanation, update `updated`
 - Keep the file for historical record
-
-After resolving or discarding, use `AskUserQuestion` to ask whether to keep the file or delete it.
