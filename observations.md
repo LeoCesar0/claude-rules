@@ -44,12 +44,13 @@ related-observations:
 # Short descriptive title
 
 ## Context
-Self-contained description — a reader with no prior exposure must be able to understand and reproduce what's being observed. Do not summarize away detail.
+Self-contained description — a reader with no prior exposure must be able to understand and reproduce what's being observed. Always start by explaining *what* the problem or improvement is in prose, before any step-by-step. Do not summarize away detail.
 
 Include, in this order:
-- **How to observe or reproduce** — concrete steps, conditions, inputs, or code paths that trigger the behavior
+- **Summary** — 1–3 paragraphs explaining, in prose, what was observed and why it matters to a reader who has never heard of it. For `bug`/`smell`: describe current vs. expected behavior. For `enhancement`/`performance`: describe the current gap vs. the desired state. For `security`: describe the exposure and the threat model. Name the feature/area in plain language before introducing function names or file paths. This subsection is required — reproduction steps never come first.
 - **Examples** — actual inputs/outputs, log snippets, values, or scenarios (whenever possible)
 - **User report** (when user-reported) — the user's original description of the problem or pain, rendered objectively and scientifically, without omitting details or replacing the user's words with interpretation
+- **How to observe or reproduce** — concrete steps, conditions, inputs, or code paths that trigger the behavior
 
 ## Where
 File(s) and line(s) affected.
