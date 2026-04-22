@@ -16,6 +16,10 @@ When an observation fits multiple types, use the higher-priority one.
 - `enhancement` — missing or incomplete functionality
 - `smell` — works but poorly structured
 
+## Before writing a new observation
+
+- Ask the user which language to use for observation files (typically English or Portuguese-BR). Apply that choice to every observation file created during the session unless the user changes it.
+
 ## File format
 
 ```markdown
@@ -39,8 +43,13 @@ related-observations:
 
 # Short descriptive title
 
-## What was found
-Brief explanation of the issue.
+## Context
+Self-contained description — a reader with no prior exposure must be able to understand and reproduce what's being observed. Do not summarize away detail.
+
+Include, in this order:
+- **How to observe or reproduce** — concrete steps, conditions, inputs, or code paths that trigger the behavior
+- **Examples** — actual inputs/outputs, log snippets, values, or scenarios (whenever possible)
+- **User report** (when user-reported) — the user's original description of the problem or pain, rendered objectively and scientifically, without omitting details or replacing the user's words with interpretation
 
 ## Where
 File(s) and line(s) affected.
