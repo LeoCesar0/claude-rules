@@ -24,7 +24,7 @@ When an observation fits multiple types, use the higher-priority one.
 
 ```markdown
 ---
-status: open | in-progress | resolved | discarded
+status: open | in-progress | awaiting-validation | resolved | discarded
 type: bug | performance | security | enhancement | smell
 severity: low | medium | high
 found-during: "brief description of the task being worked on"
@@ -85,11 +85,18 @@ Observations are investigation tools, not source of truth — they are a snapsho
 
 ## Lifecycle
 
-Status transitions: open → in-progress → resolved | discarded
+Status transitions: open → in-progress → awaiting-validation → resolved | discarded
+
+`awaiting-validation` is optional — skip it when the fix can be verified purely in-session (tests green, type-check clean, no user-facing behavior to eyeball). Use it when sign-off depends on something only the user can confirm.
+
+**On hand off for validation:**
+- Set `status: awaiting-validation`, update `updated`
+- Add a `## Pending Validation` section: what was done, what the user needs to check, and how (steps, URLs, commands)
+- Do **not** set `resolved-date` yet
 
 **On resolve:**
 - Set `status: resolved`, `resolved-date` to current date, update `updated`
-- Add `## Resolution` section describing what was done
+- Add `## Resolution` section describing what was done (may fold in the `## Pending Validation` content)
 
 **On discard:**
 - Set `status: discarded`, `discard-reason` with brief explanation, update `updated`

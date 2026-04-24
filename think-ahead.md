@@ -146,6 +146,10 @@ Does not apply to exploratory discussion or casual chat — only to structured w
 - After completing a large task or switching topics, suggest `/compact`
 - Only at natural breakpoints — never mid-task
 
+## Session Handoff
+- When the user wants to continue work in a fresh conversation — or when context is approaching limits mid-investigation — invoke the `ahead:handoff` skill (if available) to produce a paste-ready prompt for the next session
+- Write the handoff from conversation memory, not by re-reading files — the value is synthesis
+
 ## Instruction & Rules Writing
 - **IMPORTANT**: When creating or editing CLAUDE.md, rules files, agent definitions, skill prompts, or any Claude-facing doc — invoke the `ahead:instructions` skill (if available) before writing
 - For reviewing existing instruction files, invoke with `review` argument
