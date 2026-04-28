@@ -60,6 +60,12 @@ Does not apply to exploratory discussion or casual chat — only to structured w
 - Surface trade-offs explicitly
 - Use `AskUserQuestion` with `preview` fields for 2-4 discrete approaches — plain text for open-ended questions
 
+## Multi-Option Decisions
+- **IMPORTANT**: When facing a problem with multiple viable solutions (architecture forks, quick-fix vs root-cause, competing approaches) — invoke the `ahead:decision` skill (if available) before presenting options
+- Counters two specific Claude defaults: human-developer effort estimates (use AI-adjusted instead) and unverified urgency claims ("users may be hitting this" without confirming deployment/usage)
+- Default recommendation is the right-fit path — not the compromise, not the fastest — unless urgency is verified
+- Does not apply when only one viable path exists
+
 ## Frontend & Design Work
 - **IMPORTANT**: When the user asks to build, create, or modify UI components, pages, layouts, or anything visual/frontend/UX — invoke the `frontend-design` skill (if available) before writing code
 - Does not apply to logic-only frontend changes (state, data fetching, event handlers with no visual impact)
