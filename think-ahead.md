@@ -85,12 +85,12 @@ Does not apply to exploratory discussion or casual chat — only to structured w
 - Create observation files for issues found; don't just report in chat
 - See @~/.claude/rules/observations.md for types, format, and lifecycle
 
-## Blueprints Framework (Opt-In)
-- The Spec → Plan → Execute → Validate framework lives in `~/.claude/rules/blueprints.md` and is **not loaded by default**
+## Specs Framework (Opt-In)
+- The lightweight spec workflow lives in `~/.claude/rules/specs.md` and is **not loaded by default**
 - Read it only when one of these triggers is present:
-  - The user explicitly mentions blueprints, specs, plans, or validation in the framework sense
-  - The user invokes any `/ahead:spec|plan|execute|validate|blueprints` skill (these auto-load it)
-  - The current task involves files inside `docs/blueprints/`
+  - The user explicitly mentions specs, spec groups, or the framework's documents
+  - The user invokes the `/ahead:specs` skill (which auto-loads it)
+  - The current task involves files inside `docs/specs/`
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
 - **Do not remove** debug logs (`console.log`, `print`, `debugger`) or commented-out code automatically
