@@ -477,6 +477,7 @@ Push the user to fill in concrete anchors during discussion — empty Implementa
 - **Shallow code reading only** — validate assumptions, name reuse anchors. Don't deep-dive design.
 - **Challenge scope** — push back on over-engineering, speculative specs, or specs that should be split
 - **Specs over discussion** — capture decisions in files, not in chat
+- **Status icons in tables** — every row in the overview's Specs table uses icons alongside the status word (see `~/.claude/rules/specs.md` § Status Icons)
 ```
 
 #### `~/.claude/skills/ahead:instructions/SKILL.md`

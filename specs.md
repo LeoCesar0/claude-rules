@@ -93,6 +93,16 @@ Bug specs include a `## Reproduction` section: expected vs actual behavior, cond
 - Spec moves to `implemented` only after code is shipped and tests pass
 - On any edit, bump the file's `updated` field to today's date
 
+### Status Icons
+
+Use icons in the overview's Specs table for quick visual scan. Icons go alongside the status word, not in the frontmatter `status:` field:
+
+- 📝 `draft` (spec or overview) — not yet ready
+- 🚧 `approved` (spec) / `active` (overview) — work in progress
+- ✅ `implemented` (spec) / `completed` (overview) — done
+
+Example row: `| 1 | component-foundation | 🚧 approved | first to ship |`
+
 ## Implementation Flow
 
 Once a spec is `approved`:
