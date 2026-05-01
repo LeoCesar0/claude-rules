@@ -60,6 +60,9 @@ Impact and consequences.
 
 ## Suggested approach
 Recommended fix or action.
+
+## Progress
+Appended during work — test runs (baseline → iterations), key values, decisions. Summarized away on resolve per the lifecycle rules.
 ```
 
 ## Frontmatter fields
@@ -82,6 +85,25 @@ Observations are investigation tools, not source of truth — they are a snapsho
 - Re-read the affected code — the codebase may have changed since the observation was written
 - Verify the issue still exists and the suggested approach still applies
 - If stale, update the observation before starting the fix
+
+## Tests as the primary progress tool
+
+Drive observation work with tests / measurable comparison whenever applicable. Extends the bug-fix workflow in `think-ahead.md` to all observation types and adds in-file progress logging.
+
+**Execution Flow:**
+1. Understand and investigate the issue, validate the observation's content against the current code, validate it is still relevant and truthful; update the observation if needed
+2. Run or write/update tests that capture current behavior; record the baseline output in the obs file
+3. For bugs: confirm the bug reproduces; otherwise the observation may be stable and may be discarded
+4. Discuss and revalidated solution or already suggested approach based on test results or current behavior
+5. Apply changes
+6. Re-run tests; record the new output alongside the baseline
+7. Iterate until the test passes or the obs moves to `awaiting-validation`
+
+**Logging in the obs file:**
+- The obs file is the running log — record runs, values, and decisions there as work happens, not only in chat. Append to the `## Progress` section
+- When test artifacts are gitignored (local outputs, fixtures, screenshots), reference the path AND inline the key data (failing assertion, relevant values, summary line). A reader without the artifact must still be able to follow the progress
+- Don't paste full logs — extract the meaningful slice (failing assertion, key values, summary line)
+- Skip the TDD flow only when not applicable (visual-only UI work, infra inspection, ad-hoc analysis); state in the obs why tests aren't the driver
 
 ## Lifecycle
 
