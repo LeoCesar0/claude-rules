@@ -49,7 +49,7 @@ Self-contained description — a reader with no prior exposure must be able to u
 Include, in this order:
 - **Summary** — 1–3 paragraphs explaining, in prose, what was observed and why it matters to a reader who has never heard of it. For `bug`/`smell`: describe current vs. expected behavior. For `enhancement`/`performance`: describe the current gap vs. the desired state. For `security`: describe the exposure and the threat model. Name the feature/area in plain language before introducing function names or file paths. This subsection is required — reproduction steps never come first.
 - **Examples** — actual inputs/outputs, log snippets, values, or scenarios (whenever possible)
-- **User report** (when user-reported) — the user's original description of the problem or pain, rendered objectively and scientifically, without omitting details or replacing the user's words with interpretation
+- **User report** (when user-reported) — a factual restatement of the user's report. Rephrase or omit personal/emotional framing (e.g. "I'm confused", "I don't know what this means") into objective observations. Preserve concrete details, examples, and reproduction info.
 - **How to observe or reproduce** — concrete steps, conditions, inputs, or code paths that trigger the behavior
 
 ## Where
@@ -94,7 +94,9 @@ Status transitions: open → in-progress → awaiting-validation → resolved | 
 - Add a `## Pending Validation` section: what was done, what the user needs to check, and how (steps, URLs, commands)
 - Do **not** set `resolved-date` yet
 
-**On resolve:**
+**On resolve** (only after the user has explicitly confirmed the observation is resolved — never infer from passing tests or a successful fix alone):
+- Ask the user for permission to commit pending changes related to the fix; once committed, record the SHA(s) in `related-commits`
+- Summarize the file before marking resolved: keep the final problem statement, root cause, and fix. Remove verbose process notes and self-introduced issues that were created and fixed in-flight. If failed approaches are worth preserving, condense them under a brief `## Things tried that didn't work` subsection — otherwise drop them
 - Set `status: resolved`, `resolved-date` to current date, update `updated`
 - Add `## Resolution` section describing what was done (may fold in the `## Pending Validation` content)
 
