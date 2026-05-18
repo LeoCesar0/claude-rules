@@ -311,6 +311,7 @@ mkdir -p "~/.claude/skills/ahead:instructions"
 mkdir -p "~/.claude/skills/ahead:mr"
 mkdir -p "~/.claude/skills/ahead:handoff"
 mkdir -p "~/.claude/skills/ahead:decision"
+mkdir -p "~/.claude/skills/ahead:recall"
 ```
 
 Create the following skill files:
@@ -796,6 +797,133 @@ A quick or partial fix is the correct answer only when:
 - Not a template — does not impose a fixed number of options or a fragility axis.
 ```
 
+#### `~/.claude/skills/ahead:recall/SKILL.md`
+
+````markdown
+---
+description: Read the last 2 chat transcripts of the current project to recall what was being worked on and suggest next steps — continue the previous task or move to a new one
+disable-model-invocation: true
+allowed-tools: Read, Glob, Bash(ls *, head *, tail *, grep *, wc *, jq *, pwd, sed *, stat *)
+effort: medium
+---
+
+# Recall
+
+Read the last 2 chat transcripts of the current project to remind the user what they were working on. Output is a concise summary per chat plus a single suggested next step. The summary should jog memory — not document.
+
+## Invocation
+
+- `/ahead:recall` — print the recall summary to chat (no file written)
+
+## Step 1: Locate the project's session files
+
+Claude Code stores transcripts at `~/.claude/projects/<slug>/*.jsonl`, where `<slug>` is the current working directory with `/` replaced by `-`.
+
+```bash
+slug=$(pwd | sed 's|/|-|g')
+dir="$HOME/.claude/projects/$slug"
+```
+
+If `$dir` does not exist or contains no `.jsonl` files: tell the user "No previous sessions found for this project." and stop.
+
+## Step 2: Pick the 2 previous sessions
+
+List `.jsonl` files by mtime descending. **Skip the first** (= current session — its file is being written to right now and always has the freshest mtime). Take the next 2.
+
+```bash
+ls -t "$dir"/*.jsonl 2>/dev/null | tail -n +2 | head -n 2
+```
+
+- If 0 files remain: stop with the "no previous sessions" message.
+- If 1 file remains: process that one and explicitly note that only one prior session exists.
+
+## Step 3: Extract signal from each session (do NOT read whole files)
+
+Transcripts can be hundreds of KB. Use targeted bash extractions only — never `Read` the whole file.
+
+Per session, capture:
+
+- **Original intent** — the first `user` text message (first ~30 lines):
+  ```bash
+  head -n 50 "$file" | grep -m1 '"type":"user"'
+  ```
+- **Last user message** — what the user said when the session ended:
+  ```bash
+  tail -n 200 "$file" | grep '"type":"user"' | tail -n 1
+  ```
+- **Last assistant messages** — final state, summary, or blocker:
+  ```bash
+  tail -n 200 "$file" | grep '"type":"assistant"' | tail -n 3
+  ```
+- **Files touched** — area of work, from tool calls:
+  ```bash
+  grep -oE '"file_path":"[^"]+"' "$file" | sort -u | head -n 10
+  ```
+- **Session bounds** — line count and last-modified timestamp:
+  ```bash
+  wc -l "$file"
+  stat -c '%y' "$file"
+  ```
+
+Cap interpretation to roughly 50 lines of content per session. If `jq` is available, use it to cleanly extract `.message.content` strings; otherwise rely on plain grep.
+
+## Step 4: Synthesize per chat
+
+For each session, derive:
+
+- **Topic** (3–7 words) — from first user message combined with the dominant file area
+- **Motivation** — one sentence on why the work started
+- **Problem** — one sentence on what was being solved
+- **Status** — pick one based on the tail of the transcript:
+  - `done` — last assistant said "tests pass", "shipped", "resolved"
+  - `in-progress` — work clearly underway, no closure
+  - `blocked` — explicit failure, unanswered question, or error state
+  - `abandoned` — user pivoted mid-flow with no return
+  - `unclear` — none of the above signals strong enough
+- **Next step** — derived from:
+  1. An explicit next step the assistant proposed in its last message, or
+  2. A pending user question that was never answered, or
+  3. Empty if `status: done`
+
+## Step 5: Output format
+
+Print to chat — no file written. Keep each bullet to one short sentence.
+
+```markdown
+## Chat 1 — <topic>
+- **Motivation**: …
+- **Problem**: …
+- **Status**: <done | in-progress | blocked | abandoned | unclear>
+- **Suggested next step**: …
+
+## Chat 2 — <topic>
+- **Motivation**: …
+- **Problem**: …
+- **Status**: …
+- **Suggested next step**: …
+
+---
+**Suggestion**: <one line — continue chat X because Y / both look done; obvious next is Z / no clear direction, tell me where to focus>
+```
+
+Match the output language to the user's working language (Portuguese-BR, English, etc. — infer from the active conversation).
+
+## Rules
+
+- Do **not** mix content between the two chats. Present them separately. Only synthesize across them in the final `Suggestion` line.
+- Do **not** read full transcript files. Use head/tail/grep with caps.
+- Do **not** write any file — output is chat-only by design.
+- If both chats look concluded and the next step is obvious from cues in the transcripts (a TODO mentioned, an observation referenced, a spec waiting to be implemented), suggest it. Otherwise, ask the user to redirect.
+
+## Edge cases
+
+- **No previous sessions** → "Sem histórico anterior neste projeto." / "No previous sessions for this project." Stop.
+- **Only 1 previous session** → show that one; note the absence of a 2nd.
+- **Very short session** (`wc -l` < 20) → label as "brief session, limited context" — still show what you can.
+- **Two sessions on the same topic** → still present separately; in the suggestion line, recommend continuing the most recent.
+- **`jq` not installed** → fall back to plain grep; do not fail.
+````
+
 ### 6. Recommended settings
 
 Add `effortLevel` to `~/.claude/settings.json` (the same file where `claudeMdExcludes` was added in Step 3):
@@ -828,3 +956,4 @@ This sets Claude Code to use high effort by default. Merge into your existing `s
 - **Merge Request drafts**: Use `/ahead:mr` to generate a `mr.md` draft from the current branch's net changes
 - **Session handoff**: Use `/ahead:handoff` to generate a paste-ready prompt that carries the current work into a fresh Claude Code window
 - **Decision-making**: Use `/ahead:decision` to weigh multi-option tradeoffs without inflated effort estimates or phantom urgency
+- **Session recall**: Use `/ahead:recall` to summarize the last 2 chats of the current project and suggest where to pick up
