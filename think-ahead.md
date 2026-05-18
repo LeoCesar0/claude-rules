@@ -16,6 +16,11 @@
 - **CRITICAL**: Never run any command, script, or operation that could affect a production environment — deployments, production database operations, CI/CD triggers, cloud CLI commands targeting production, or anything that connects to production services
 - If there is any doubt whether an action could affect production, stop and ask the user before proceeding
 
+## Schema & Contract Changes
+- **CRITICAL**: When a change will modify a database schema in a way that requires a migration, explicitly inform the user and get acceptance before proceeding
+- **CRITICAL**: When a change will modify the contract or schema of an API route (request/response shape, status codes, auth, params), explicitly inform the user and get acceptance before proceeding
+- State concretely what changes: the table/column/route/field, before vs. after, and downstream impact (existing consumers, clients, stored data)
+
 ## Think Ahead
 - Before implementing: evaluate side effects, edge cases, and impact on existing code
 - When fixing a bug, investigate if the root cause affects other areas
