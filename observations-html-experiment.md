@@ -10,6 +10,13 @@ This file **overrides only the file format** of new observations. Everything els
 - Existing `.md` observation files: **do not convert, do not touch** — they remain valid in their original format
 - Copy the template at `~/.claude/rules/observation-template.html` as the starting point. Keep the `<style>` block intact so each file renders standalone in a browser.
 
+## Head meta tags (quick-scan)
+
+- The `<head>` carries `<meta name="obs-…">` tags that duplicate the most-scanned frontmatter fields so a `Read` of the first lines surfaces the obs at a glance
+- Required meta fields: `obs-status`, `obs-type`, `obs-severity`, `obs-retention`, `obs-date`, `obs-updated`, `obs-found-in`
+- All other frontmatter fields live **only** in the visible `<dl class="frontmatter">` — do not add meta tags for them
+- **Meta tags MUST stay in sync with the `<dl class="frontmatter">`** — when editing any of the mirrored fields (status, type, severity, retention, date, updated, found-in), update both places in the same edit. A drifted meta tag is worse than no meta tag
+
 ## Frontmatter encoding
 
 - Render the frontmatter as a visible `<dl class="frontmatter">` immediately after `<header class="title-block">` and before the Summary section
