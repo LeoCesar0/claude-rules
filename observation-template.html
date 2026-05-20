@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{TITLE} — Observation</title>
+    <style>
+      :root {
+        --bg: #fafaf7;
+        --surface: #ffffff;
+        --surface-2: #f3f1ea;
+        --text: #1a1a1a;
+        --text-muted: #5a5a5a;
+        --text-soft: #7a7a7a;
+        --border: #e1ddd2;
+        --border-strong: #c9c4b5;
+        --accent: #0a4d8c;
+        --accent-soft: #e3edf7;
+        --good: #1f6f3c;
+        --good-bg: #e6f3ec;
+        --warn: #a85a00;
+        --warn-bg: #fbeed7;
+        --bad: #a32820;
+        --bad-bg: #fbe4e2;
+        --neutral: #5a5a5a;
+        --neutral-bg: #ececea;
+        --code-bg: #1f1f1f;
+        --code-text: #f1f1f1;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+        --serif: Georgia, "Times New Roman", "Liberation Serif", serif;
+        --sans:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container { max-width: 1180px; margin: 0 auto; padding: 48px 32px 96px; }
+
+      header.title-block {
+        border-bottom: 2px solid var(--text);
+        padding-bottom: 20px;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-family: var(--serif);
+        font-size: 42px;
+        line-height: 1.15;
+        margin: 0 0 12px;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 18px;
+        color: var(--text-muted);
+        margin: 0;
+      }
+
+      h2 {
+        font-family: var(--serif);
+        font-size: 30px;
+        margin: 56px 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      h3 { font-family: var(--serif); font-size: 22px; margin: 32px 0 12px; }
+      h4 {
+        font-family: var(--sans);
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin: 24px 0 8px;
+      }
+
+      p { margin: 0 0 14px; }
+
+      .lead {
+        font-family: var(--serif);
+        font-size: 20px;
+        line-height: 1.55;
+        color: var(--text);
+      }
+
+      /* Frontmatter dl */
+      dl.frontmatter {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 8px 18px;
+        margin: 24px 0 32px;
+        padding: 18px 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        box-shadow: var(--shadow);
+        font-size: 13px;
+      }
+      dl.frontmatter dt {
+        font-family: var(--mono);
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 11px;
+        padding-top: 4px;
+      }
+      dl.frontmatter dd {
+        margin: 0;
+        color: var(--text);
+      }
+      dl.frontmatter code,
+      dl.frontmatter .path {
+        font-family: var(--mono);
+        font-size: 12px;
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+      }
+
+      /* Verdict badge */
+      .verdict {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .verdict.good { background: var(--good-bg); color: var(--good); }
+      .verdict.warn { background: var(--warn-bg); color: var(--warn); }
+      .verdict.bad { background: var(--bad-bg); color: var(--bad); }
+      .verdict.neutral { background: var(--neutral-bg); color: var(--neutral); }
+      .verdict.accent { background: var(--accent-soft); color: var(--accent); }
+
+      /* Callout */
+      .callout {
+        background: var(--surface);
+        border-left: 4px solid var(--accent);
+        padding: 18px 22px;
+        margin: 24px 0;
+        box-shadow: var(--shadow);
+      }
+      .callout.bad { border-left-color: var(--bad); background: var(--bad-bg); }
+      .callout.warn { border-left-color: var(--warn); background: var(--warn-bg); }
+      .callout.good { border-left-color: var(--good); background: var(--good-bg); }
+      .callout h4 { margin: 0 0 8px; color: var(--text); }
+      .callout p:last-child { margin-bottom: 0; }
+
+      /* Tables */
+      .table-wrap {
+        overflow-x: auto;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        box-shadow: var(--shadow);
+        margin: 16px 0 28px;
+      }
+      table.eval {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      table.eval th, table.eval td {
+        text-align: left;
+        padding: 10px 12px;
+        vertical-align: top;
+        border-bottom: 1px solid var(--border);
+      }
+      table.eval thead th {
+        background: var(--surface-2);
+        font-family: var(--mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      table.eval tbody tr:hover { background: rgba(0, 0, 0, 0.015); }
+      table.eval td.num {
+        text-align: center;
+        font-family: var(--mono);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      /* Code blocks */
+      pre.code {
+        background: var(--code-bg);
+        color: var(--code-text);
+        padding: 14px 18px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 1.5;
+        margin: 12px 0;
+      }
+      code.inline {
+        font-family: var(--mono);
+        font-size: 12.5px;
+        background: var(--surface-2);
+        padding: 1px 6px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+      }
+
+      /* Lists */
+      ul.bullets, ol.bullets { margin: 8px 0 18px; padding-left: 22px; }
+      ul.bullets li, ol.bullets li { margin: 4px 0; }
+
+      /* Recommendation grid (for Suggested approach with options) */
+      .recs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin: 20px 0;
+      }
+      .rec-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+      }
+      .rec-card .prio {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .rec-card.p1 .prio { color: var(--bad); }
+      .rec-card.p2 .prio { color: var(--warn); }
+      .rec-card.p3 .prio { color: var(--neutral); }
+      .rec-card h4 {
+        margin: 0 0 8px;
+        color: var(--text);
+        font-family: var(--serif);
+        font-size: 17px;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      .rec-card p { font-size: 13px; color: var(--text-muted); margin: 0 0 6px; }
+      .rec-card .effort {
+        margin-top: auto;
+        padding-top: 10px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-soft);
+        border-top: 1px dashed var(--border);
+      }
+
+      /* Findings split */
+      .findings {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 16px 0;
+      }
+      @media (max-width: 800px) {
+        .findings { grid-template-columns: 1fr; }
+        dl.frontmatter { grid-template-columns: 1fr; gap: 4px 0; }
+        dl.frontmatter dt { padding-top: 10px; }
+      }
+      .finding-list {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 22px;
+        box-shadow: var(--shadow);
+      }
+      .finding-list.must { border-top: 4px solid var(--bad); }
+      .finding-list.note { border-top: 4px solid var(--warn); }
+      .finding-list h3 { margin: 0 0 10px; }
+      .finding-list ul { margin: 0; padding-left: 22px; }
+      .finding-list li { margin: 6px 0; font-size: 14px; }
+
+      /* Progress entries (per-run logging) */
+      .progress-entry {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 4px;
+        padding: 14px 18px;
+        margin: 12px 0;
+        box-shadow: var(--shadow);
+      }
+      .progress-entry.good { border-left-color: var(--good); }
+      .progress-entry.warn { border-left-color: var(--warn); }
+      .progress-entry.bad { border-left-color: var(--bad); }
+      .progress-entry .when {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 6px;
+      }
+      .progress-entry .what {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .progress-entry p:last-child { margin-bottom: 0; }
+
+      /* TOC */
+      .toc {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 22px;
+        margin: 24px 0 32px;
+        box-shadow: var(--shadow);
+      }
+      .toc h4 { margin: 0 0 8px; }
+      .toc ol { margin: 0; padding-left: 22px; columns: 2; column-gap: 32px; }
+      .toc ol li { margin: 3px 0; font-size: 13px; break-inside: avoid; }
+      .toc a { color: var(--accent); text-decoration: none; }
+      .toc a:hover { text-decoration: underline; }
+
+      .quote {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 16px;
+        color: var(--text-muted);
+        border-left: 3px solid var(--border-strong);
+        padding: 4px 16px;
+        margin: 12px 0;
+      }
+
+      .footer {
+        margin-top: 64px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-soft);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="title-block">
+        <div class="eyebrow">Observation · {AREA} · {TYPE}</div>
+        <h1>{SHORT_DESCRIPTIVE_TITLE}</h1>
+        <p class="subtitle">{OPTIONAL_ONE_LINE_ESSENCE}</p>
+      </header>
+
+      <dl class="frontmatter">
+        <dt>status</dt><dd><span class="verdict warn">open</span></dd>
+        <dt>type</dt><dd><span class="verdict bad">bug</span></dd>
+        <dt>severity</dt><dd><span class="verdict bad">high</span></dd>
+        <dt>found-during</dt><dd>brief description of the task being worked on</dd>
+        <dt>found-in</dt><dd><span class="path">file/path/where/spotted.ts</span></dd>
+        <dt>working-branch</dt><dd>branch-where-fix-will-be-executed</dd>
+        <dt>found-in-branch</dt><dd>branch-where-spotted</dd>
+        <dt>date</dt><dd>YYYY-MM-DD</dd>
+        <dt>updated</dt><dd>YYYY-MM-DD</dd>
+        <!-- Omit dt/dd pairs entirely for empty fields:
+             resolved-date, discard-reason, deferred, deferred-reason,
+             related-commits, related-observations -->
+      </dl>
+
+      <section id="summary">
+        <h2>Summary</h2>
+        <p class="lead">
+          One to two sentences capturing the essence — what was observed and why it matters
+          to a reader with no prior exposure.
+        </p>
+        <div class="callout">
+          <p>
+            <span class="verdict bad">type · bug</span>
+            <span class="verdict bad">severity · high</span>
+            <span class="verdict warn">status · open</span>
+            Where the issue lives and what flows it impacts, in one sentence.
+          </p>
+        </div>
+      </section>
+
+      <section id="context">
+        <h2>Context</h2>
+        <p>
+          Self-contained description in prose — a reader with no prior exposure must be able to
+          understand and reproduce what's being observed. Always start by explaining the problem
+          or improvement in prose, before any step-by-step. Do not summarize away detail.
+        </p>
+
+        <h3>Examples</h3>
+        <ul class="bullets">
+          <li>actual inputs/outputs, log snippets, values, or scenarios</li>
+        </ul>
+
+        <!-- Only when user-reported. Factual restatement, no emotional framing. -->
+        <h3>User report</h3>
+        <p>Factual restatement of the user's report.</p>
+
+        <h3>How to observe or reproduce</h3>
+        <ol class="bullets">
+          <li>concrete step, condition, input, or code path</li>
+        </ol>
+      </section>
+
+      <section id="where">
+        <h2>Where</h2>
+        <ul class="bullets">
+          <li><code class="inline">src/file/path.ts:123-145</code></li>
+        </ul>
+      </section>
+
+      <section id="why">
+        <h2>Why it matters</h2>
+        <p>Impact and consequences.</p>
+      </section>
+
+      <section id="approach">
+        <h2>Suggested approach</h2>
+        <p>Recommended fix or action.</p>
+      </section>
+
+      <section id="progress">
+        <h2>Progress</h2>
+        <!-- Appended live during work. One .progress-entry per run/decision. -->
+        <div class="progress-entry">
+          <div class="when">YYYY-MM-DD · baseline</div>
+          <div class="what">Reproduction test added: <code class="inline">tests/foo.test.ts</code></div>
+          <p>Failing assertion: <code class="inline">expect(x).toBe(y) // received z</code>.</p>
+        </div>
+      </section>
+
+      <!-- Conditional section · only when status: awaiting-validation
+      <section id="pending-validation">
+        <h2>Pending Validation</h2>
+        <p>What was done, what the user needs to check, and how (steps, URLs, commands).</p>
+      </section>
+      -->
+
+      <!-- Conditional section · only when status: resolved
+      <section id="resolution">
+        <h2>Resolution</h2>
+        <p>What was done — final problem statement, root cause, and fix.</p>
+        <h3>Things tried that didn't work</h3>
+        <ul class="bullets"><li>only if worth preserving</li></ul>
+      </section>
+      -->
+
+      <footer class="footer">
+        <span>Observation · {AREA} · {TYPE} · {DATE}</span>
+        <span>{WORKING_BRANCH_OR_RELATIVE_PATH}</span>
+      </footer>
+    </div>
+  </body>
+</html>
