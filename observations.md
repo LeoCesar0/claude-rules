@@ -27,6 +27,7 @@ When an observation fits multiple types, use the higher-priority one.
 status: open | in-progress | awaiting-validation | resolved | discarded
 type: bug | performance | security | enhancement | smell
 severity: low | medium | high
+retention: disposable | reference | promote
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
 working-branch: "branch-where-fix-will-be-executed"
@@ -73,6 +74,11 @@ Appended during work — test runs (baseline → iterations), key values, decisi
 - `discard-reason` — why discarded (empty until discarded)
 - `working-branch` — branch where the fix will be executed; leave empty if unknown
 - `found-in-branch` — branch where the issue was spotted (usually current branch at discovery)
+- `retention` — at-write-time judgment of how the file should be treated when closed; required, no default:
+  - `disposable` — once fixed, only a minimal record matters. One-shot bugs, isolated UI tweaks, narrow smells with no lasting lesson
+  - `reference` — captures a class-of-bug, a non-obvious design decision, trade-offs, or a learning worth keeping rich. Don't aggressively summarize on resolve
+  - `promote` — content should be lifted into formal documentation (architecture doc, runbook, reference). On resolve, emit a follow-up to extract it
+  - Re-evaluate during work — promotion can become apparent later. A bug that exposes a deeper class can move from `disposable` to `reference`
 - `deferred` — when `true`, postponed intentionally; don't re-surface unless user asks
 - `deferred-reason` — brief explanation of why it was deferred (empty until deferred)
 - `related-commits` — list of commit SHAs that contributed to or addressed this observation; optional
@@ -118,7 +124,10 @@ Status transitions: open → in-progress → awaiting-validation → resolved | 
 
 **On resolve** (only after the user has explicitly confirmed the observation is resolved — never infer from passing tests or a successful fix alone):
 - Ask the user for permission to commit pending changes related to the fix; once committed, record the SHA(s) in `related-commits`
-- Summarize the file before marking resolved: keep the final problem statement, root cause, and fix. Remove verbose process notes and self-introduced issues that were created and fixed in-flight. If failed approaches are worth preserving, condense them under a brief `## Things tried that didn't work` subsection — otherwise drop them
+- Summarize the file before marking resolved, branching by `retention`:
+  - `disposable` — aggressive trim: keep only the final problem statement, root cause, and fix. Drop process notes, intermediate iterations, and self-introduced issues created and fixed in-flight. Drop failed approaches unless cheap to condense
+  - `reference` — light trim: preserve examples, reasoning, trade-offs, and failed approaches worth knowing (under `## Things tried that didn't work`). Drop only log noise and self-introduced issues. A new reader must still be able to learn from the file
+  - `promote` — same trim as `reference`, plus append a `## Follow-up` section naming the target file/path where the content should be lifted (e.g., "extract to `docs/references/editor-observer.md`"). Surface this follow-up to the user before closing
 - Set `status: resolved`, `resolved-date` to current date, update `updated`
 - Add `## Resolution` section describing what was done (may fold in the `## Pending Validation` content)
 

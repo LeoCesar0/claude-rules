@@ -13,9 +13,9 @@ This file **overrides only the file format** of new observations. Everything els
 ## Frontmatter encoding
 
 - Render the frontmatter as a visible `<dl class="frontmatter">` immediately after `<header class="title-block">` and before the Summary section
-- Use the **same field names** as `observations.md`: `status`, `type`, `severity`, `found-during`, `found-in`, `working-branch`, `found-in-branch`, `date`, `updated`, `resolved-date`, `discard-reason`, `deferred`, `deferred-reason`, `related-commits`, `related-observations`
-- **Omit empty fields entirely** — drop the `<dt>/<dd>` pair rather than emitting an empty `<dd>`
-- Render `status`, `type`, and `severity` values as `<span class="verdict X">…</span>` inside their `<dd>` using the badge map below — gives at-a-glance scan
+- Use the **same field names** as `observations.md`: `status`, `type`, `severity`, `retention`, `found-during`, `found-in`, `working-branch`, `found-in-branch`, `date`, `updated`, `resolved-date`, `discard-reason`, `deferred`, `deferred-reason`, `related-commits`, `related-observations`
+- **Omit empty fields entirely** — drop the `<dt>/<dd>` pair rather than emitting an empty `<dd>`. `retention` is required and never empty
+- Render `status`, `type`, `severity`, and `retention` values as `<span class="verdict X">…</span>` inside their `<dd>` using the badge map below — gives at-a-glance scan
 - Render file/branch paths inside `<span class="path">…</span>` (mono styling)
 - Render list-valued fields (`related-commits`, `related-observations`) as comma-separated `<code>` chips inside the `<dd>`
 
@@ -36,6 +36,9 @@ This file **overrides only the file format** of new observations. Everything els
 | type     | `performance`        | `verdict warn`       |
 | type     | `enhancement`        | `verdict accent`     |
 | type     | `smell`              | `verdict neutral`    |
+| retention| `disposable`         | `verdict neutral`    |
+| retention| `reference`          | `verdict accent`     |
+| retention| `promote`            | `verdict good`       |
 
 ## Required section order
 

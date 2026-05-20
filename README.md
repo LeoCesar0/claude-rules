@@ -104,6 +104,7 @@ Use this format:
 status: open
 type: bug | performance | security | enhancement | smell
 severity: low | medium | high
+retention: disposable | reference | promote
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
 date: YYYY-MM-DD HH:mm
