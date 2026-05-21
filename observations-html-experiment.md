@@ -13,16 +13,16 @@ This file **overrides only the file format** of new observations. Everything els
 ## Head meta tags (quick-scan)
 
 - The `<head>` carries `<meta name="obs-…">` tags that duplicate the most-scanned frontmatter fields so a `Read` of the first lines surfaces the obs at a glance
-- Required meta fields: `obs-status`, `obs-type`, `obs-severity`, `obs-retention`, `obs-date`, `obs-updated`, `obs-found-in`
+- Required meta fields: `obs-status`, `obs-type`, `obs-severity`, `obs-understanding`, `obs-execution`, `obs-retention`, `obs-date`, `obs-updated`, `obs-found-in`
 - All other frontmatter fields live **only** in the visible `<dl class="frontmatter">` — do not add meta tags for them
-- **Meta tags MUST stay in sync with the `<dl class="frontmatter">`** — when editing any of the mirrored fields (status, type, severity, retention, date, updated, found-in), update both places in the same edit. A drifted meta tag is worse than no meta tag
+- **Meta tags MUST stay in sync with the `<dl class="frontmatter">`** — when editing any of the mirrored fields (status, type, severity, understanding, execution, retention, date, updated, found-in), update both places in the same edit. A drifted meta tag is worse than no meta tag
 
 ## Frontmatter encoding
 
 - Render the frontmatter as a visible `<dl class="frontmatter">` immediately after `<header class="title-block">` and before the Summary section
-- Use the **same field names** as `observations.md`: `status`, `type`, `severity`, `retention`, `found-during`, `found-in`, `working-branch`, `found-in-branch`, `date`, `updated`, `resolved-date`, `discard-reason`, `deferred`, `deferred-reason`, `related-commits`, `related-observations`
-- **Omit empty fields entirely** — drop the `<dt>/<dd>` pair rather than emitting an empty `<dd>`. `retention` is required and never empty
-- Render `status`, `type`, `severity`, and `retention` values as `<span class="verdict X">…</span>` inside their `<dd>` using the badge map below — gives at-a-glance scan
+- Use the **same field names** as `observations.md`: `status`, `type`, `severity`, `understanding`, `execution`, `retention`, `found-during`, `found-in`, `working-branch`, `found-in-branch`, `date`, `updated`, `resolved-date`, `discard-reason`, `deferred`, `deferred-reason`, `related-commits`, `related-observations`
+- **Omit empty fields entirely** — drop the `<dt>/<dd>` pair rather than emitting an empty `<dd>`. `retention`, `understanding`, and `execution` are required and never empty
+- Render `status`, `type`, `severity`, `understanding`, `execution`, and `retention` values as `<span class="verdict X">…</span>` inside their `<dd>` using the badge map below — gives at-a-glance scan
 - Render file/branch paths inside `<span class="path">…</span>` (mono styling)
 - Render list-valued fields (`related-commits`, `related-observations`) as comma-separated `<code>` chips inside the `<dd>`
 
@@ -46,6 +46,12 @@ This file **overrides only the file format** of new observations. Everything els
 | retention| `disposable`         | `verdict neutral`    |
 | retention| `reference`          | `verdict accent`     |
 | retention| `promote`            | `verdict good`       |
+| understanding | `confident`     | `verdict good`       |
+| understanding | `uncertain`     | `verdict warn`       |
+| understanding | `needs-input`   | `verdict accent`     |
+| execution | `confident`         | `verdict good`       |
+| execution | `uncertain`         | `verdict warn`       |
+| execution | `needs-input`       | `verdict accent`     |
 
 ## Required section order
 
@@ -55,11 +61,12 @@ This file **overrides only the file format** of new observations. Everything els
 4. `<section id="context">` — Context prose; subsections `Examples`, `User report` (when user-reported), `How to observe or reproduce`
 5. `<section id="where">` — files / lines affected
 6. `<section id="why">` — Why it matters
-7. `<section id="approach">` — Suggested approach
-8. `<section id="progress">` — appended live during work; one `<div class="progress-entry">` per run/decision
-9. `<section id="pending-validation">` — **conditional**, only when `status: awaiting-validation`
-10. `<section id="resolution">` — **conditional**, only when `status: resolved` (may include an `<h3>Things tried that didn't work</h3>` block)
-11. `<footer class="footer">` — area, type, date, branch
+7. `<section id="open-questions">` — **conditional**, only when `understanding` or `execution` is `needs-input`. List concrete questions prefixed with `[understanding]` or `[execution]`. Goes before `#approach` because the questions may change which approach is right
+8. `<section id="approach">` — Suggested approach
+9. `<section id="progress">` — appended live during work; one `<div class="progress-entry">` per run/decision
+10. `<section id="pending-validation">` — **conditional**, only when `status: awaiting-validation`
+11. `<section id="resolution">` — **conditional**, only when `status: resolved` (may include an `<h3>Things tried that didn't work</h3>` block)
+12. `<footer class="footer">` — area, type, date, branch
 
 The Summary section is **top-level** here (it was nested inside Context in the markdown format). The long-form "Summary" subsection from `observations.md` Context still lives inside the Context prose — the top-level Summary is a 1–2 sentence headline plus the verdict callout, not a replacement.
 

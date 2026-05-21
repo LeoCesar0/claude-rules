@@ -7,6 +7,8 @@
     <meta name="obs-status" content="open" />
     <meta name="obs-type" content="bug" />
     <meta name="obs-severity" content="high" />
+    <meta name="obs-understanding" content="confident" />
+    <meta name="obs-execution" content="uncertain" />
     <meta name="obs-retention" content="reference" />
     <meta name="obs-date" content="YYYY-MM-DD" />
     <meta name="obs-updated" content="YYYY-MM-DD" />
@@ -390,6 +392,8 @@
         <dt>status</dt><dd><span class="verdict warn">open</span></dd>
         <dt>type</dt><dd><span class="verdict bad">bug</span></dd>
         <dt>severity</dt><dd><span class="verdict bad">high</span></dd>
+        <dt>understanding</dt><dd><span class="verdict good">confident</span></dd>
+        <dt>execution</dt><dd><span class="verdict warn">uncertain</span></dd>
         <dt>retention</dt><dd><span class="verdict accent">reference</span></dd>
         <dt>found-during</dt><dd>brief description of the task being worked on</dd>
         <dt>found-in</dt><dd><span class="path">file/path/where/spotted.ts</span></dd>
@@ -452,6 +456,16 @@
         <h2>Why it matters</h2>
         <p>Impact and consequences.</p>
       </section>
+
+      <!-- Conditional section · only when understanding or execution is needs-input
+      <section id="open-questions">
+        <h2>Open Questions</h2>
+        <ul class="bullets">
+          <li>[understanding] Concrete question about the problem/scope that needs the user's answer.</li>
+          <li>[execution] Concrete question about the suggested approach that needs the user's decision.</li>
+        </ul>
+      </section>
+      -->
 
       <section id="approach">
         <h2>Suggested approach</h2>

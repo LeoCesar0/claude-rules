@@ -27,6 +27,8 @@ When an observation fits multiple types, use the higher-priority one.
 status: open | in-progress | awaiting-validation | resolved | discarded
 type: bug | performance | security | enhancement | smell
 severity: low | medium | high
+understanding: confident | uncertain | needs-input
+execution: confident | uncertain | needs-input
 retention: disposable | reference | promote
 found-during: "brief description of the task being worked on"
 found-in: "file/path/where/spotted.ts"
@@ -59,6 +61,9 @@ File(s) and line(s) affected.
 ## Why it matters
 Impact and consequences.
 
+## Open Questions
+Required when `understanding` or `execution` is `needs-input`. List the concrete questions the user must answer before the suggested approach can be acted on. Prefix each with `[understanding]` or `[execution]` to indicate which field the question stems from. Omit this section entirely when both fields are `confident` or `uncertain`.
+
 ## Suggested approach
 Recommended fix or action.
 
@@ -74,6 +79,9 @@ Appended during work — test runs (baseline → iterations), key values, decisi
 - `discard-reason` — why discarded (empty until discarded)
 - `working-branch` — branch where the fix will be executed; leave empty if unknown
 - `found-in-branch` — branch where the issue was spotted (usually current branch at discovery)
+- `understanding` — first impression of how clear the problem (bug/smell/security/performance) or scope (enhancement) is at write time. Values: `confident` (clear grasp, can proceed), `uncertain` (hypothesis with blind spots or trade-offs), `needs-input` (concrete questions to resolve with the user first). **Immutable after write** — not updated during discussion or progress; it is the calibrated signal at the moment the obs was written. Only revise if the obs is materially rewritten (new scope discovered, original framing was wrong)
+- `execution` — first impression of how safe/correct the suggested approach is at write time. Same values as `understanding`: `confident` (path is clear), `uncertain` (path has trade-offs or non-obvious risks), `needs-input` (user decision or approval needed before proceeding). **Immutable after write** — same rule as `understanding`
+- When either `understanding` or `execution` is `needs-input`, an `## Open Questions` section is required, listing the concrete questions and prefixing each with `[understanding]` or `[execution]`
 - `retention` — at-write-time judgment of how the file should be treated when closed; required, no default:
   - `disposable` — once fixed, only a minimal record matters. One-shot bugs, isolated UI tweaks, narrow smells with no lasting lesson
   - `reference` — captures a class-of-bug, a non-obvious design decision, trade-offs, or a learning worth keeping rich. Don't aggressively summarize on resolve
