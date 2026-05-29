@@ -314,6 +314,7 @@ mkdir -p "~/.claude/skills/ahead:handoff"
 mkdir -p "~/.claude/skills/ahead:decision"
 mkdir -p "~/.claude/skills/ahead:recall"
 mkdir -p "~/.claude/skills/ahead:visualize"
+mkdir -p "~/.claude/skills/ahead:resolve"
 ```
 
 Create the following skill files:
@@ -1039,6 +1040,76 @@ No long summary — the page *is* the deliverable.
 
 Also create the template file `~/.claude/skills/ahead:visualize/template.html` with the same HTML shell + embedded CSS used by `observation-template.html` (palette: `--bg`, `--surface`, `--accent`, `--good/warn/bad`, etc.). Placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{EYEBROW}}`, `{{BODY}}`, `{{TIMESTAMP}}`. Copy from the existing `~/.claude/skills/ahead:visualize/template.html` in the repo as the canonical source.
 
+#### `~/.claude/skills/ahead:resolve/SKILL.md`
+
+```markdown
+---
+description: Run the observation resolve ritual for observations handled this session — validate against the diff, present a plan, then trim/close/commit each. Closing ceremony only; never writes fix code.
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git *), AskUserQuestion
+effort: medium
+---
+
+# Resolve Observations
+
+Execute the resolve ritual from `~/.claude/rules/observations.md` for observations whose fix was already implemented and verified this session. This is a **closing ceremony** — it never writes fix code.
+
+The ritual itself (retention-based trim, `## Resolution`, status/date fields, `related-commits`, `promote` follow-up) lives in `observations.md` under **Lifecycle → On resolve**. Follow it there; this skill orchestrates *which* observations, *in what order*, and *with what safety gate*.
+
+## Arguments
+
+- **No args** → discover candidates automatically (default flow below).
+- **Paths/slugs** (e.g. `cropping/bug/2026-05-29-foo`) → treat as an explicit scope filter; resolve only those, skip auto-discovery.
+- **Free-text** (natural language) → additional constraints/reminders folded into the flow.
+- **CRITICAL**: no argument disables the gate or the plan-approval step — not even "resolve tudo automático". Both are non-negotiable.
+
+## Flow
+
+### 1. Discover candidates
+
+- Start from observations handled this session.
+- Cross-check with `git status` and `git diff` (staged + unstaged) — **the diff is the source of truth** for what actually changed, not conversation memory.
+- Detect **old** observations (not the session's focus) that the current changes touched, resolve, or turn into discards.
+- Both formats count: `.md` and `.html` observation files.
+
+### 2. Validate each candidate (the gate)
+
+Re-read the affected code per `observations.md` → **Before working on an observation**, then classify:
+
+- **CLEAN** — fix present in the diff, observation still confers, ready to close.
+- **BLOCKED** — stop and report. Only these two cases block:
+  - *Issue no longer reproduces / fix absent*: revalidation does not confirm the observation, or the expected fix is not in the diff. May mean it was not done, or it should become a **discard** instead of a resolve.
+  - *Old observation altered / real awaiting-validation*: an old observation was touched in passing, or the observation needs verification only the user can confirm (`awaiting-validation` with unchecked `Pending Validation`).
+
+Schema/contract approval and unanswered `needs-input` are **not** gates here — they are upstream gates already enforced during the fix work.
+
+### 3. Present the plan (always, before any write or commit)
+
+Stop and present, even when nothing is blocked:
+
+- **To resolve** — ordered list (order is your judgment; respect obvious `related-observations` dependencies). Per item: retention trim plan, target commit message, `related-commits` handling, and `## Follow-up` target when `retention: promote`.
+- **To discard** — observations the gate found are no longer valid, each with proposed `discard-reason`.
+- **Blocked** — each with the reason and a **concrete suggestion** for how to proceed.
+
+Wait for user approval. Approving the plan covers both the manual's "explicit user confirmation to resolve" and its "permission to commit". Execute nothing before approval.
+
+### 4. Execute (after approval) — one commit per observation
+
+In planned order, for each observation:
+
+- Apply the `observations.md` resolve ritual (or discard ritual for discards). For `.html` files, keep the `<meta obs-*>` tags in sync with the `<dl class="frontmatter">` per `observations-html-experiment.md`.
+- Set `resolved-date` and `updated` to today's date (today is provided in session context — never shell out for it).
+- Update related docs: `related-observations` cross-links, and any doc named by a `promote` follow-up (surface the follow-up to the user before closing).
+- Commit the fix changes **and** the observation file together. Then capture the commit SHA, write it into `related-commits`, and `git commit --amend` so the SHA lands inside its own commit.
+
+### 5. Wrap up
+
+Report with the calibrated findings format from `think-ahead.md`:
+
+- **Resolved** — each with its commit SHA.
+- **Discarded** — each with reason.
+- **Still blocked** — each with the next step needed.
+```
+
 ### 6. Recommended settings
 
 Add `effortLevel` to `~/.claude/settings.json` (the same file where `claudeMdExcludes` was added in Step 3):
@@ -1073,3 +1144,4 @@ This sets Claude Code to use high effort by default. Merge into your existing `s
 - **Decision-making**: Use `/ahead:decision` to weigh multi-option tradeoffs without inflated effort estimates or phantom urgency
 - **Session recall**: Use `/ahead:recall` to summarize the last 2 chats of the current project and suggest where to pick up
 - **Visualize & explain**: Use `/ahead:visualize` to render the current response (or a focused part of the conversation) as a styled, didactically enriched HTML page that opens in the browser — for when you want to *understand*, not just *read*
+- **Resolve observations**: Use `/ahead:resolve` to run the observation closing ceremony for items handled in the session — validates each against the git diff, presents a plan, then trims/closes/commits one commit per observation
