@@ -313,6 +313,7 @@ mkdir -p "~/.claude/skills/ahead:mr"
 mkdir -p "~/.claude/skills/ahead:handoff"
 mkdir -p "~/.claude/skills/ahead:decision"
 mkdir -p "~/.claude/skills/ahead:recall"
+mkdir -p "~/.claude/skills/ahead:visualize"
 ```
 
 Create the following skill files:
@@ -960,6 +961,84 @@ Match the output language to the user's working language (Portuguese-BR, English
 - **`jq` not installed** → fall back to plain grep; do not fail.
 ````
 
+#### `~/.claude/skills/ahead:visualize/SKILL.md`
+
+```markdown
+---
+description: Render the current conversation (or a focused part of it) as a richly formatted, didactically enhanced HTML page that opens automatically in the browser. For when the user wants to deeply understand something — not just read it.
+allowed-tools: Read, Write, Bash(date *), Bash(xdg-open *), Bash(mkdir *)
+effort: medium
+---
+
+# Visualize & Explain
+
+Generate an HTML rendering of the current conversation (or a part of it) that goes **beyond formatting** — it actively helps the user understand. The output opens in the browser automatically.
+
+## Purpose
+
+Long Claude Code responses are hard to digest in monospace chat: hierarchy collapses, examples mix with prose, terms-of-art appear without explanation, decisions arrive without their reasoning surfaced. This skill produces a reading-mode HTML where:
+
+- Structure is visually obvious (proper h1/h2/h3, callouts for key insights)
+- Implicit context is made explicit (terms defined, jargon expanded, abbreviations spelled out)
+- Decisions show their *why*, not just their *what*
+- Comparisons live in tables
+- Code is properly highlighted, not inline-collapsed
+- Warnings and trade-offs are surfaced as callouts rather than buried in prose
+
+This is **not** a typesetter — you are allowed and encouraged to enrich, explain, and reorganize for clarity. You are not allowed to invent facts or change conclusions.
+
+## Invocation
+
+- `/ahead:visualize` — render the **last substantive assistant message** in the conversation
+- `/ahead:visualize <focus>` — render content related to the focus, drawing from the conversation as needed (e.g. `/ahead:visualize the hook architecture we just discussed`)
+
+## Steps
+
+1. **Identify content to render**:
+   - No argument → use the last substantive assistant message
+   - With argument → identify the slice of conversation matching the focus
+
+2. **Read the template** at `~/.claude/skills/ahead:visualize/template.html`. Placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{EYEBROW}}`, `{{BODY}}`, `{{TIMESTAMP}}`.
+
+3. **Compose the rendering** with the augmentation pattern (lead paragraph, define on first use, lift warnings to callouts, comparisons in tables, etc.).
+
+4. **Generate output path**: `/tmp/claude-render-$(date +%Y%m%d-%H%M%S).html`.
+
+5. **Write the file** using Write. Substitute placeholders inline.
+
+6. **Open in browser**: `xdg-open /tmp/claude-render-<timestamp>.html &`.
+
+7. **Confirm in chat**: one short line with the file path.
+
+## Augmentation rules
+
+The body MUST start with `<p class="lead">` — a 1-3 sentence TL;DR.
+
+Enrichment moves: define on first use, make the *why* explicit, lift warnings into callouts, show recommendations in `.callout.good`, put trade-offs in tables, expand abbreviations, render file paths as `<span class="path">`, add a `<dl class="glossary">` when 3+ specialized terms appear.
+
+What NOT to do: invent facts/numbers/paths, change conclusions, omit substantive information, translate (preserve the original language), include greetings or meta-commentary.
+
+## CSS classes available
+
+`.callout` + variants (good/warn/bad), `.verdict` badges, `.table-wrap > table`, `dl.glossary`, `.path`, `<pre><code>`, `<p class="lead">`.
+
+## Files
+
+- `template.html` — HTML shell with embedded CSS. Same design language as observation-template.html. Sibling to SKILL.md.
+
+## Output to chat
+
+After writing and opening, respond with one line:
+
+```
+✓ /tmp/claude-render-<timestamp>.html (aberto no navegador)
+```
+
+No long summary — the page *is* the deliverable.
+```
+
+Also create the template file `~/.claude/skills/ahead:visualize/template.html` with the same HTML shell + embedded CSS used by `observation-template.html` (palette: `--bg`, `--surface`, `--accent`, `--good/warn/bad`, etc.). Placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{EYEBROW}}`, `{{BODY}}`, `{{TIMESTAMP}}`. Copy from the existing `~/.claude/skills/ahead:visualize/template.html` in the repo as the canonical source.
+
 ### 6. Recommended settings
 
 Add `effortLevel` to `~/.claude/settings.json` (the same file where `claudeMdExcludes` was added in Step 3):
@@ -993,3 +1072,4 @@ This sets Claude Code to use high effort by default. Merge into your existing `s
 - **Session handoff**: Use `/ahead:handoff` to generate a paste-ready prompt that carries the current work into a fresh Claude Code window
 - **Decision-making**: Use `/ahead:decision` to weigh multi-option tradeoffs without inflated effort estimates or phantom urgency
 - **Session recall**: Use `/ahead:recall` to summarize the last 2 chats of the current project and suggest where to pick up
+- **Visualize & explain**: Use `/ahead:visualize` to render the current response (or a focused part of the conversation) as a styled, didactically enriched HTML page that opens in the browser — for when you want to *understand*, not just *read*
