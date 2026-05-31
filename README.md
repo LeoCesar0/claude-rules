@@ -991,51 +991,94 @@ This is **not** a typesetter — you are allowed and encouraged to enrich, expla
 ## Invocation
 
 - `/ahead:visualize` — render the **last substantive assistant message** in the conversation
-- `/ahead:visualize <focus>` — render content related to the focus, drawing from the conversation as needed (e.g. `/ahead:visualize the hook architecture we just discussed`)
+- `/ahead:visualize <focus>` — render content related to the focus, drawing from the conversation as needed (e.g. `/ahead:visualize the hook architecture we just discussed`, `/ahead:visualize all the decisions about cropping`)
 
 ## Steps
 
 1. **Identify content to render**:
-   - No argument → use the last substantive assistant message
-   - With argument → identify the slice of conversation matching the focus
+   - No argument → use the last substantive assistant message (skip yours-just-now if the user invoked `/ahead:visualize` immediately; pick the previous substantive answer)
+   - With argument → identify the slice of conversation matching the focus. Could span multiple messages. Use your conversation memory directly — do not re-read files unless necessary.
 
-2. **Read the template** at `~/.claude/skills/ahead:visualize/template.html`. Placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{EYEBROW}}`, `{{BODY}}`, `{{TIMESTAMP}}`.
+2. **Read the template** at `~/.claude/skills/ahead:visualize/template.html`. It has 4 placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{EYEBROW}}`, `{{BODY}}`, `{{TIMESTAMP}}`.
 
-3. **Compose the rendering** with the augmentation pattern (lead paragraph, define on first use, lift warnings to callouts, comparisons in tables, etc.).
+3. **Compose the rendering** — see "How to render" below for the augmentation pattern.
 
-4. **Generate output path**: `/tmp/claude-render-$(date +%Y%m%d-%H%M%S).html`.
+4. **Generate output path**: `/tmp/claude-render-$(date +%Y%m%d-%H%M%S).html`. Get the timestamp via `date +%Y%m%d-%H%M%S` (Bash). Each invocation creates a new file — past renders persist until reboot.
 
-5. **Write the file** using Write. Substitute placeholders inline.
+5. **Write the file** using Write. Substitute the placeholders inline.
 
-6. **Open in browser**: `xdg-open /tmp/claude-render-<timestamp>.html &`.
+6. **Open in browser**: `xdg-open /tmp/claude-render-<timestamp>.html &` (Bash, background so the command returns immediately).
 
-7. **Confirm in chat**: one short line with the file path.
+7. **Confirm in chat**: one short line stating the file path. No long summary — the HTML *is* the summary.
 
-## Augmentation rules
+## How to render — the augmentation pattern
 
-The body MUST start with `<p class="lead">` — a 1-3 sentence TL;DR.
+### Header
 
-Enrichment moves: define on first use, make the *why* explicit, lift warnings into callouts, show recommendations in `.callout.good`, put trade-offs in tables, expand abbreviations, render file paths as `<span class="path">`, add a `<dl class="glossary">` when 3+ specialized terms appear.
+- `{{EYEBROW}}` — a short tag like "Discussão · Arquitetura", "Análise", "Resumo de decisão". Lowercase contextual label.
+- `{{TITLE}}` — the main subject in one phrase (e.g. "HTML Render Hook: por que falhou e o que veio depois")
+- `{{SUBTITLE}}` — italic one-liner that frames the read (e.g. "Race condition + drift conversacional levaram a um pivot para skill")
+- `{{TIMESTAMP}}` — `$(date '+%Y-%m-%d %H:%M')` in the local timezone
 
-What NOT to do: invent facts/numbers/paths, change conclusions, omit substantive information, translate (preserve the original language), include greetings or meta-commentary.
+### Body — the augmentation rules
 
-## CSS classes available
+Write HTML directly into `{{BODY}}`. No `<html>`/`<head>`/`<body>` wrappers — those are in the template.
 
-`.callout` + variants (good/warn/bad), `.verdict` badges, `.table-wrap > table`, `dl.glossary`, `.path`, `<pre><code>`, `<p class="lead">`.
+**Always start** with a `<p class="lead">` paragraph (1-3 sentences) that answers: *what is this page about, and what's the single most important takeaway?* This is the TL;DR — written so the user can stop reading after the lead if pressed for time.
 
-## Files
+**Then enrich** as you compose the rest. The enrichment moves (apply where useful, not everywhere):
 
-- `template.html` — HTML shell with embedded CSS. Same design language as observation-template.html. Sibling to SKILL.md.
+| Move | Example |
+|---|---|
+| **Define on first use** | First mention of "race condition", "Stop hook", "transcript JSONL" — give a one-line definition inline or in a `<dl class="glossary">` block. |
+| **Make the *why* explicit** | "Escolhemos X" → "Escolhemos X porque Y; a alternativa Z teria custado W." |
+| **Lift warnings into callouts** | A caveat buried in prose → `<div class="callout warn">` with `<h4>` label. |
+| **Recommendations stand out** | "Recomendo A" → `<div class="callout good"><h4>Recomendação</h4>...` |
+| **Trade-offs in tables** | Comparing options → `<div class="table-wrap"><table>` with columns like "Opção", "Prós", "Contras". |
+| **Expand abbreviations** | "CC" → "Claude Code (CC)" on first use. |
+| **Add file paths as `<span class="path">`** | Mentions of files → render as path chips, not bare text. |
+| **Show a glossary when terms are dense** | If 3+ specialized terms appear, add a `<dl class="glossary">` block early in the body listing them with short definitions. |
+
+### What NOT to do
+
+- Don't invent facts, numbers, file paths, or quotes
+- Don't change recommendations or conclusions
+- Don't omit substantive information just to make the page shorter
+- Don't translate — preserve the language the user has been using (typically PT-BR in this project)
+- Don't make up a glossary entry if the term isn't actually in the source content
+- Don't include greetings, sign-offs, or meta-commentary ("Aqui está o resumo…")
+
+### CSS classes available (from the template)
+
+**Callouts**: `<div class="callout">`, `<div class="callout good">`, `<div class="callout warn">`, `<div class="callout bad">`. Inside, use `<h4>` for a label and `<p>` for content.
+
+**Verdict badges**: `<span class="verdict good|warn|bad|neutral|accent">label</span>` — inline pills for status/labels.
+
+**Tables**: always wrap in `<div class="table-wrap"><table>...</table></div>`. The CSS handles the styling.
+
+**Glossary**: `<dl class="glossary"><dt>term</dt><dd>definition</dd>...</dl>` — for definition lists.
+
+**Paths**: `<span class="path">~/.claude/skills/...</span>` — for file/folder references.
+
+**Code**: `<pre><code>multi-line</code></pre>` for blocks, `<code>inline</code>` for inline.
+
+**Lead**: `<p class="lead">...</p>` — for the TL;DR paragraph at the top.
+
+## When the input is sparse
+
+If the source content is very short (one sentence, a confirmation), still produce a useful page: explain the surrounding context, define any term that appeared, give the user something to read. Don't refuse — the user invoked the skill because they wanted understanding, not just transcription.
+
+If the user's `<focus>` argument is vague, interpret broadly and produce something coherent; do not stop to ask for clarification.
 
 ## Output to chat
 
-After writing and opening, respond with one line:
+After writing and opening, respond with a single short line in chat:
 
 ```
 ✓ /tmp/claude-render-<timestamp>.html (aberto no navegador)
 ```
 
-No long summary — the page *is* the deliverable.
+No long summary. The page *is* the deliverable.
 ```
 
 Also create the template file `~/.claude/skills/ahead:visualize/template.html` with the same HTML shell + embedded CSS used by `observation-template.html` (palette: `--bg`, `--surface`, `--accent`, `--good/warn/bad`, etc.). Placeholders: `{{TITLE}}`, `{{SUBTITLE}}`, `{{EYEBROW}}`, `{{BODY}}`, `{{TIMESTAMP}}`. Copy from the existing `~/.claude/skills/ahead:visualize/template.html` in the repo as the canonical source.
@@ -1075,12 +1118,12 @@ The ritual itself (retention-based trim, `## Resolution`, status/date fields, `r
 
 Re-read the affected code per `observations.md` → **Before working on an observation**, then classify:
 
-- **CLEAN** — fix present in the diff, observation still confers, ready to close.
-- **BLOCKED** — stop and report. Only these two cases block:
-  - *Issue no longer reproduces / fix absent*: revalidation does not confirm the observation, or the expected fix is not in the diff. May mean it was not done, or it should become a **discard** instead of a resolve.
-  - *Old observation altered / real awaiting-validation*: an old observation was touched in passing, or the observation needs verification only the user can confirm (`awaiting-validation` with unchecked `Pending Validation`).
+- **CLEAN** — the fix is present in the diff and the observation still confers. Default verdict. Ready to close.
+- **BLOCKED** — only when the code itself proves something required is missing. Two cases:
+  - *Fix absent / issue still reproduces*: the change the observation calls for is not in the diff, or re-reading the code shows the broken behavior is still there. May mean the work wasn't done, or the observation should become a **discard**.
+  - *A required task in the observation is unaddressed*: the observation enumerates a fundamental sub-task or section that the diff does not cover.
 
-Schema/contract approval and unanswered `needs-input` are **not** gates here — they are upstream gates already enforced during the fix work.
+**Invoking this skill asserts the user has already validated everything outside the code's reach** — manual/browser checks, visual QA, `Pending Validation` steps. Do **not** block on `awaiting-validation`, unchecked `Pending Validation`, or any human-only confirmation; treat those as done. Block only on what the diff and code make verifiably absent. Schema/contract approval and unanswered `needs-input` are upstream gates, not gates here.
 
 ### 3. Present the plan (always, before any write or commit)
 
@@ -1089,6 +1132,8 @@ Stop and present, even when nothing is blocked:
 - **To resolve** — ordered list (order is your judgment; respect obvious `related-observations` dependencies). Per item: retention trim plan, target commit message, `related-commits` handling, and `## Follow-up` target when `retention: promote`.
 - **To discard** — observations the gate found are no longer valid, each with proposed `discard-reason`.
 - **Blocked** — each with the reason and a **concrete suggestion** for how to proceed.
+
+Decide commit composition, messages, and `related-commits` handling yourself — present them as decisions in the plan, not as questions. Surface a question **only** for genuine ambiguity the code can't settle: e.g. unrelated changes in the working tree where it's unclear whether a file belongs in the observation's commit. Never ask about obvious grouping or message wording.
 
 Wait for user approval. Approving the plan covers both the manual's "explicit user confirmation to resolve" and its "permission to commit". Execute nothing before approval.
 
