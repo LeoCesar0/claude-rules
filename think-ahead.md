@@ -13,6 +13,7 @@
 - After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding setup section in `~/.claude/rules/README.md` with the exact current content of the changed files — the README is the source of truth for new environment setup
 
 ## Production Safety
+- See @~/.claude/rules/security.md for security & data-protection rules (threat modeling, supply-chain gate, LGPD/TIPA compliance) — same criticality tier
 - **CRITICAL**: Never run any command, script, or operation that could affect a production environment — deployments, production database operations, CI/CD triggers, cloud CLI commands targeting production, or anything that connects to production services
 - If there is any doubt whether an action could affect production, stop and ask the user before proceeding
 

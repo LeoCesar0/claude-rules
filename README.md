@@ -11,6 +11,7 @@ Claude Code loads `.md` files from `~/.claude/rules/` as global instructions for
 | File | Purpose |
 |------|---------|
 | `think-ahead.md` | Core development principles — production mindset, testing workflow, communication style, and more |
+| `security.md` | Security & data protection — threat modeling, autonomous vs. authorized fixes, supply-chain gate, LGPD/TIPA compliance |
 | `observations.md` | Observation framework — types, file format, frontmatter fields, and lifecycle |
 | `specs.md` | Specs framework — lightweight spec-driven workflow (group + spec files, plan mode for implementation) |
 
@@ -35,6 +36,7 @@ Create or update `~/.claude/CLAUDE.md`:
 
 ## Core Principles
 See @~/.claude/rules/think-ahead.md for proactive development approach
+See @~/.claude/rules/security.md for security & data protection (CRITICAL)
 See @~/.claude/rules/observations.md for observation framework (types, format, lifecycle)
 ```
 
