@@ -42,17 +42,29 @@ See @~/.claude/rules/observations.md for observation framework (types, format, l
 
 Claude Code will automatically load the referenced files into every conversation.
 
-### 3. Exclude this README from instructions
+### 3. Exclude on-demand files from instructions
 
-Since Claude Code loads all `.md` files in `~/.claude/rules/` as instructions, this README must be excluded. Add `claudeMdExcludes` to `~/.claude/settings.json`:
+Claude Code loads **every** `.md` file under `~/.claude/rules/` (recursively, including `docs/`) into the default context — `@`-imports are not the gate, the directory scan is. So any file meant to be read **on demand** rather than loaded every session must be listed in `claudeMdExcludes` in `~/.claude/settings.json`:
 
 ```json
 {
   "claudeMdExcludes": [
-    "/home/<user>/.claude/rules/README.md"
+    "/home/<user>/.claude/rules/README.md",
+    "/home/<user>/.claude/rules/agents-and-skills.md",
+    "/home/<user>/.claude/rules/specs.md",
+    "/home/<user>/.claude/rules/docs"
   ]
 }
 ```
+
+Why each is excluded:
+
+| Entry | Reason |
+|-------|--------|
+| `README.md` | Setup guide — not a behavioral rule |
+| `agents-and-skills.md` | Setup source of truth — read only when creating/editing an agent or skill |
+| `specs.md` | Opt-in framework — read only on the triggers in `think-ahead.md` |
+| `docs` | Spec groups and historical records — excluding the **directory** also keeps future specs out of the default context |
 
 **Important**: Replace `/home/<user>/` with the actual absolute path to your home directory (e.g., `/home/leonardo/`, `/Users/john/`). The pattern matches against absolute paths, so `~` won't work.
 
