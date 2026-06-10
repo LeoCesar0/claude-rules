@@ -10,7 +10,7 @@
 
 ## Global Rules Maintenance
 - After any changes to files in `~/.claude/rules/`, commit and push to the rules repo (origin: https://github.com/LeoCesar0/claude-rules.git)
-- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding setup section in `~/.claude/rules/README.md` with the exact current content of the changed files — the README is the source of truth for new environment setup
+- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding definition in `~/.claude/rules/agents-and-skills.md` with the exact current content of the changed files — that file is the source of truth for new environment setup (not `README.md`, which only links to it)
 
 ## Production Safety
 - See @~/.claude/rules/security.md for security & data-protection rules (threat modeling, supply-chain gate, LGPD/TIPA compliance) — same criticality tier
