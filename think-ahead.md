@@ -100,6 +100,14 @@ Does not apply to exploratory discussion or casual chat — only to structured w
 
 - Reuse existing code and types; infer types from schemas (Zod, etc.) rather than duplicating definitions
 
+## Orient Before Building
+
+- Before planning or implementing a non-trivial change, read the project's reference docs and convention docs relevant to the task — not just the auto-loaded CLAUDE.md
+- Survey existing components, helpers, and utilities for something to reuse or extend before writing new code
+- Identify the patterns already used in the area you're touching and follow them
+- Heed pitfalls already documented in the repo (docs, comments, observations) to avoid repeating solved problems
+- Does not apply to trivial or mechanical edits
+
 ## Always Surface What You Notice
 
 - When reading, reviewing, or working on code for any reason — surface bugs, inefficiencies, code smells, or potential issues, even if unrelated to the current task

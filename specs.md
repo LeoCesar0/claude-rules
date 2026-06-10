@@ -39,7 +39,7 @@ updated: YYYY-MM-DD
 ## Implementation Notes
 
 When planning any spec in this group:
-- Reuse existing code, patterns, and utilities — search before creating new
+- Orient before building per `think-ahead.md` — read relevant docs, survey existing code/patterns to reuse, heed documented pitfalls
 - Account for edge cases (per-spec + group-wide listed below)
 - Tests first for bugs; suggest tests for new features
 - Read this overview before entering plan mode

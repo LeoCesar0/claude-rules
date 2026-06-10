@@ -1141,7 +1141,7 @@ Process tasks **sequentially** (later tasks may depend on earlier ones). For eac
 
 Dispatch one subagent (`Agent`, general-purpose, fresh context — no worktree; subagents share the working tree so sequential edits build on each other). Instruct the subagent to, in order:
 
-- **Orient before acting** — read the project's `CLAUDE.md` and `CLAUDE.local.md` and the docs/conventions relevant to this task **before** writing anything. Survey existing components, helpers, and patterns and **reuse them** instead of rebuilding (DRY per `~/.claude/rules/think-ahead.md`); heed pitfalls already documented in the repo to avoid rework.
+- **Orient before acting** — orient before building per `~/.claude/rules/think-ahead.md` (read relevant docs/conventions, survey existing code/patterns to reuse, heed documented pitfalls); also read the project's `CLAUDE.local.md` **before** writing anything.
 - Do the single task with enough context to act without re-reading the whole queue, staying inside the **scope & guardrails** clause from the interview.
 - Work **test-first (TDD) by default** — write the test that captures the intended behavior before the implementation, then make it pass, then validate the work with that test. This is the default for **every** task type, not only bugs; for bugs, follow reproduce → fix → verify per `~/.claude/rules/think-ahead.md`. State explicitly when tests cannot verify the real behavior (visual/DOM/external) instead of claiming it works.
 - Never perform the **four hard-stops** (below) — return `needs-approval` instead.
