@@ -1191,14 +1191,14 @@ Process tasks **sequentially** (later tasks may depend on earlier ones). For eac
 
 ### 1. Brief and dispatch a subagent
 
-Dispatch one subagent (`Agent`, general-purpose, fresh context — no worktree; subagents share the working tree so sequential edits build on each other). The briefing contains, and nothing more than it needs:
+Dispatch one subagent (`Agent`, general-purpose, fresh context — no worktree; subagents share the working tree so sequential edits build on each other). Instruct the subagent to, in order:
 
-- The single task to do, with enough context to act without re-reading the whole queue.
-- The **scope & guardrails** clause from the interview.
-- The **four hard-stops** (below) with the instruction: do not perform them — return `needs-approval` instead.
-- The failure rule: attempt the fix up to **3 times** (try a different approach each time); if still failing, return `blocked` with what was tried and why.
-- The instruction to run tests when applicable and report results, and to follow the bug-fix workflow (reproduce → fix → verify) from `~/.claude/rules/think-ahead.md`.
-- The instruction to write/update any relevant **observations** with full detail per `~/.claude/rules/observations.md` (and `observations-html-experiment.md` for new files) — observations carry the rich record; the tracking doc stays terse.
+- **Orient before acting** — read the project's `CLAUDE.md` and `CLAUDE.local.md` and the docs/conventions relevant to this task **before** writing anything. Survey existing components, helpers, and patterns and **reuse them** instead of rebuilding (DRY per `~/.claude/rules/think-ahead.md`); heed pitfalls already documented in the repo to avoid rework.
+- Do the single task with enough context to act without re-reading the whole queue, staying inside the **scope & guardrails** clause from the interview.
+- Work **test-first (TDD) by default** — write the test that captures the intended behavior before the implementation, then make it pass, then validate the work with that test. This is the default for **every** task type, not only bugs; for bugs, follow reproduce → fix → verify per `~/.claude/rules/think-ahead.md`. State explicitly when tests cannot verify the real behavior (visual/DOM/external) instead of claiming it works.
+- Never perform the **four hard-stops** (below) — return `needs-approval` instead.
+- On failure, attempt a different approach up to **3 times**; if still failing, return `blocked` with what was tried and why.
+- Write/update any relevant **observations** with full detail, following the global observation rules in `~/.claude/rules/observations.md` (and `observations-html-experiment.md` for new files) — observations carry the rich record; the tracking doc stays terse.
 
 ### 2. Require a structured return
 
