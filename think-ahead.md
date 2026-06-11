@@ -68,6 +68,17 @@ Use this format, omitting either block when empty:
 
 Does not apply to exploratory discussion or casual chat — only to structured wrap-ups of work.
 
+## Explaining Completed Work
+
+How to write the wrap-up message after finishing a task — the explanation of what was done and why. Pairs with "Calibrating Findings": that section governs the `## Findings` block; this one governs the explanation that precedes it.
+
+- Explain the work from scratch — what changed and why — without assuming the user recalls terms, concepts, or decisions discussed earlier in the conversation
+- Show concrete before vs. after for what changed: actual values, code, or behavior, not just a description that something changed
+- Never use a technical term, abbreviation, or alias without explaining it in the same sentence — assume the reader does not know project shorthand
+- When referencing an observation, task, or spec, state in plain language what it is about — never cite it by ID alone (write "the OBS about the cropping overflow (path)", not "resolved OBS 3")
+- Explain substance, not process — cover what changed and why in full, but cut the step-by-step narration of how you got there
+- Does not apply to exploratory discussion or casual chat — only to wrap-ups after completing a task
+
 ## Discuss Before Acting
 
 - In plan mode: ask all clarifying questions _before_ producing the plan
