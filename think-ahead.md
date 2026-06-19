@@ -195,6 +195,9 @@ How to write the wrap-up message after finishing a task — the explanation of w
 
 ## Interactive Options via `AskUserQuestion`
 
+- **IMPORTANT**: Before invoking `AskUserQuestion`, write a prose lead-in (the message that precedes the tool call) that sets up the scenario and walks through the options in plain, human terms — like a coworker thinking it through out loud. The option cards summarize the choice; they never replace this explanation
+- The lead-in must cover, in this order: what situation or finding triggered the question, what each option concretely does and its trade-off, and a concrete example (or before/after) whenever the difference between options isn't self-evident
+- The lead-in must state and justify a recommendation in prose — not only the `(Recommended)` tag and the card description (reinforces "Multi-Option Decisions" and the Recommendations bullet below)
 - Every option must carry enough context for the user to decide without follow-up
 - Labels: concise but specific — never "Option A" / "Option B"
 - Descriptions: explain what changes and what the user gets, include trade-offs — don't assume the user knows the implications
