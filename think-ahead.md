@@ -158,8 +158,8 @@ How to write the wrap-up message after finishing a task — the explanation of w
 ### Test Type Selection
 
 - **Unit + Integration tests**: create freely
-- **E2E tests**: require user approval before creating or running
-- **Eval tests**: require user approval before creating or running
+- **E2E tests**: create and edit freely, no approval needed. Run freely when scoped to 1–2 specific tests or files (a granular run). **IMPORTANT**: the full E2E suite is slow and costly — require user approval before running the whole suite or anything beyond a granular set of tests/files
+- **Eval tests**: require user approval before creating or running, if you need it to validate your work, ask user.
 
 ### Testing Honesty
 
