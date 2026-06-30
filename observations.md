@@ -22,6 +22,8 @@ When an observation fits multiple types, use the higher-priority one.
 
 ## File format
 
+Observations may exist as `.html` (from the HTML-format experiment) or `.md`. Do not convert existing files between formats, and do not edit a file solely to migrate it. New observations are written in `.md` unless an active format-override experiment referenced in `~/.claude/CLAUDE.md` says otherwise.
+
 ```markdown
 ---
 status: open | in-progress | awaiting-validation | resolved | discarded

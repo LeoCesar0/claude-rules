@@ -13,7 +13,10 @@ Claude Code loads `.md` files from `~/.claude/rules/` as global instructions for
 | `think-ahead.md` | Core development principles — production mindset, testing workflow, communication style, and more |
 | `security.md` | Security & data protection — threat modeling, autonomous vs. authorized fixes, supply-chain gate, LGPD/TIPA compliance |
 | `observations.md` | Observation framework — types, file format, frontmatter fields, and lifecycle |
+| `observations-ai-experiment.md` | **Active experiment** — AI-first observation content (overrides the authoring style of `observations.md`; format stays `.md`) |
 | `specs.md` | Specs framework — lightweight spec-driven workflow (group + spec files, plan mode for implementation) |
+
+Dormant experiment (kept on disk, not loaded): `observations-html-experiment.md` + `observation-template.html` overrode the observation **format** to HTML. Disabled via `claudeMdExcludes`; re-enable by removing it from `claudeMdExcludes` and re-adding its `See @`-import line in `CLAUDE.md`. Only one observation-format/content experiment should be active at a time.
 
 This README also serves as the setup guide for deploying the full environment: rules, agents, and skills.
 
@@ -38,6 +41,7 @@ Create or update `~/.claude/CLAUDE.md`:
 See @~/.claude/rules/think-ahead.md for proactive development approach
 See @~/.claude/rules/security.md for security & data protection (CRITICAL)
 See @~/.claude/rules/observations.md for observation framework (types, format, lifecycle)
+See @~/.claude/rules/observations-ai-experiment.md for AI-first observation content
 ```
 
 Claude Code will automatically load the referenced files into every conversation.
@@ -52,7 +56,8 @@ Claude Code loads **every** `.md` file under `~/.claude/rules/` (recursively, in
     "/home/<user>/.claude/rules/README.md",
     "/home/<user>/.claude/rules/agents-and-skills.md",
     "/home/<user>/.claude/rules/specs.md",
-    "/home/<user>/.claude/rules/docs"
+    "/home/<user>/.claude/rules/docs",
+    "/home/<user>/.claude/rules/observations-html-experiment.md"
   ]
 }
 ```
@@ -65,6 +70,7 @@ Why each is excluded:
 | `agents-and-skills.md` | Setup source of truth — read only when creating/editing an agent or skill |
 | `specs.md` | Opt-in framework — read only on the triggers in `think-ahead.md` |
 | `docs` | Spec groups and historical records — excluding the **directory** also keeps future specs out of the default context |
+| `observations-html-experiment.md` | Dormant experiment — excluded so the HTML-format override stops loading while the file stays on disk for easy re-enable |
 
 **Important**: Replace `/home/<user>/` with the actual absolute path to your home directory (e.g., `/home/leonardo/`, `/Users/john/`). The pattern matches against absolute paths, so `~` won't work.
 
