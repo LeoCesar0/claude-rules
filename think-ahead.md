@@ -5,6 +5,7 @@
 - At conversation start, check for a current-work file — `current-work.md` or `current-work.html` — in the project root or `docs/tmp/`
 - If one exists, read and follow its instructions, and treat that exact file (its location + extension) as canonical — never create a second copy in a different location or extension
 - If missing or empty, skip
+- When creating, resetting, or restructuring this file, follow the standard in `~/.claude/rules/current-work.md`
 
 ## Git Commits
 
