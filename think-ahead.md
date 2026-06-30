@@ -120,6 +120,15 @@ How to write the wrap-up message after finishing a task — the explanation of w
 - Heed pitfalls already documented in the repo (docs, comments, observations) to avoid repeating solved problems
 - Does not apply to trivial or mechanical edits
 
+## Closing the Loop on a Task
+
+Applies when finishing a task tracked in a current-work file or resolved through an observation. Complements "Orient Before Building" (read the docs first) with the write-back step (reconcile them after).
+
+- When you begin such a task, set its current-work Status to em andamento (🔄); when done, update the Status and move it per the board lifecycle in `~/.claude/rules/current-work.md`
+- After implementing the change, check the docs it may have made stale: reference docs, convention/pattern docs, pitfall notes, and any doc in or pointing at the touched area. Bound the search to that area — do not audit the whole docs tree
+- Update a doc as part of the task only when both hold: it is a descriptive/reference doc (not a Claude-facing instruction file), and not updating it would leave it stating something factually false about the code or behavior, with an unambiguous correct replacement
+- **IMPORTANT**: Otherwise, do not edit — flag. This covers any judgment-call update and every Claude-facing instruction file (CLAUDE.md, `~/.claude/rules/`, agents, skills — already gated by "Auto Improvement" and the `ahead:instructions` skill). Record the specific doc and the open question in the observation (and in the current-work task when one exists), and set the current-work task Status to aguardando (⏸️ verdict warn) until the user rules on it. Do not silently move the task to "Feitas" while doc questions are open
+
 ## Always Surface What You Notice
 
 - When reading, reviewing, or working on code for any reason — surface bugs, inefficiencies, code smells, or potential issues, even if unrelated to the current task

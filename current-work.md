@@ -52,8 +52,8 @@ For a `.md` current-work file, mirror the same sections and tables in Markdown.
   the same task keeps its ID as it moves `Curto prazo → Sprint atual → Feitas`.
   Never renumber on reset.
 - **`Status`** — a single `verdict` badge with one fixed emoji per state,
-  exactly: `verdict accent` 🎯 (em andamento), `verdict neutral` ⏳ (aberto),
-  `verdict warn` 🔧 (aguardando/bloqueado), `verdict good` ✅ (feito). One emoji
+  exactly: `verdict accent` 🔄 (em andamento), `verdict neutral` ⬜ (aberto),
+  `verdict warn` ⏸️ (aguardando/bloqueado), `verdict good` ✅ (feito). One emoji
   per verdict — never vary the emoji used for a given verdict.
 - **`Obs`** — a relative, clickable `<a href>` to the observation file
   (`../observations/<area>/<type>/YYYY-MM-DD-slug.html|md`), link text = short
