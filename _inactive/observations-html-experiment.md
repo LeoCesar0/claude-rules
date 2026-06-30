@@ -1,6 +1,6 @@
 # Observations · HTML Format (EXPERIMENT)
 
-**Status:** experimental. To revert: delete this file, delete `~/.claude/rules/observation-template.html`, and remove the matching `@`-import line from `~/.claude/CLAUDE.md`. No edits needed in `observations.md`.
+**Status:** dormant. Disabled by excluding the `_inactive/` folder in `claudeMdExcludes`. To re-enable: move this file and `observation-template.html` back to `~/.claude/rules/`, and re-add its `@`-import line in `~/.claude/CLAUDE.md`. To revert permanently: delete this file and `observation-template.html`. No edits needed in `observations.md`.
 
 This file **overrides only the file format** of new observations. Everything else in `~/.claude/rules/observations.md` (types, frontmatter fields, statuses, lifecycle, before-/after-work rules, tests-as-progress, Pending Validation / Resolution semantics) still applies unchanged.
 
@@ -8,7 +8,7 @@ This file **overrides only the file format** of new observations. Everything els
 
 - New observation files: write as **HTML** at `docs/observations/<area>/<type>/YYYY-MM-DD-short-slug.html`
 - Existing `.md` observation files: **do not convert, do not touch** — they remain valid in their original format
-- Copy the template at `~/.claude/rules/observation-template.html` as the starting point. Keep the `<style>` block intact so each file renders standalone in a browser.
+- Copy the template `observation-template.html` (kept in the same folder as this file) as the starting point. Keep the `<style>` block intact so each file renders standalone in a browser.
 
 ## Head meta tags (quick-scan)
 
