@@ -20,11 +20,11 @@ This file **overrides only the file format** of new observations. Everything els
 ## Frontmatter encoding
 
 - Render the frontmatter as a visible `<dl class="frontmatter">` immediately after `<header class="title-block">` and before the Summary section
-- Use the **same field names** as `observations.md`: `status`, `type`, `severity`, `understanding`, `execution`, `retention`, `found-during`, `found-in`, `working-branch`, `found-in-branch`, `date`, `updated`, `resolved-date`, `discard-reason`, `deferred`, `deferred-reason`, `related-commits`, `related-observations`
+- Use the **same field names** as `observations.md`: `status`, `type`, `severity`, `understanding`, `execution`, `retention`, `found-during`, `found-in`, `working-branch`, `found-in-branch`, `date`, `updated`, `resolved-date`, `discard-reason`, `deferred`, `deferred-reason`, `related-observations`
 - **Omit empty fields entirely** — drop the `<dt>/<dd>` pair rather than emitting an empty `<dd>`. `retention`, `understanding`, and `execution` are required and never empty
 - Render `status`, `type`, `severity`, `understanding`, `execution`, and `retention` values as `<span class="verdict X">…</span>` inside their `<dd>` using the badge map below — gives at-a-glance scan
 - Render file/branch paths inside `<span class="path">…</span>` (mono styling)
-- Render list-valued fields (`related-commits`, `related-observations`) as comma-separated `<code>` chips inside the `<dd>`
+- Render list-valued fields (`related-observations`) as comma-separated `<code>` chips inside the `<dd>`
 
 ### Badge color map
 

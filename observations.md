@@ -42,7 +42,6 @@ resolved-date:
 discard-reason:
 deferred:
 deferred-reason:
-related-commits:
 related-observations:
 ---
 
@@ -91,8 +90,10 @@ Appended during work — test runs (baseline → iterations), key values, decisi
   - Re-evaluate during work — promotion can become apparent later. A bug that exposes a deeper class can move from `disposable` to `reference`
 - `deferred` — when `true`, postponed intentionally; don't re-surface unless user asks
 - `deferred-reason` — brief explanation of why it was deferred (empty until deferred)
-- `related-commits` — list of commit SHAs that contributed to or addressed this observation; optional
-- `related-observations` — list of paths to other observation files with direct impact on this one; optional
+- `related-observations` — paths to other observation files with a **structural** relationship to this one; optional. Qualifies only when one of:
+  - **blocker/dependency** — one cannot be resolved until the other is, or one directly caused the other (either direction of the edge)
+  - **sibling** — they share a root cause, or a single change resolves both
+  Topic overlap or being in the same area is not enough. If you cannot name the relationship as blocker/dependency or sibling, omit it. (In the AI-first experiment, the loose `[[slug]]` body links are a separate, exploratory graph — this frontmatter field stays restricted to the relationships above.)
 
 ## Before working on an observation
 
@@ -133,7 +134,7 @@ Status transitions: open → in-progress → awaiting-validation → resolved | 
 - Do **not** set `resolved-date` yet
 
 **On resolve** (only after the user has explicitly confirmed the observation is resolved — never infer from passing tests or a successful fix alone):
-- Ask the user for permission to commit pending changes related to the fix; once committed, record the SHA(s) in `related-commits`
+- Ask the user for permission to commit pending changes related to the fix
 - Summarize the file before marking resolved, branching by `retention`:
   - `disposable` — aggressive trim: keep only the final problem statement, root cause, and fix. Drop process notes, intermediate iterations, and self-introduced issues created and fixed in-flight. Drop failed approaches unless cheap to condense
   - `reference` — light trim: preserve examples, reasoning, trade-offs, and failed approaches worth knowing (under `## Things tried that didn't work`). Drop only log noise and self-introduced issues. A new reader must still be able to learn from the file

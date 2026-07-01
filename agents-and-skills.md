@@ -1047,7 +1047,7 @@ effort: medium
 
 Execute the resolve ritual from `~/.claude/rules/observations.md` for observations whose fix was already implemented and verified this session. This is a **closing ceremony** — it never writes fix code.
 
-The ritual itself (retention-based trim, `## Resolution`, status/date fields, `related-commits`, `promote` follow-up) lives in `observations.md` under **Lifecycle → On resolve**. Follow it there; this skill orchestrates *which* observations, *in what order*, and *with what safety gate*.
+The ritual itself (retention-based trim, `## Resolution`, status/date fields, `promote` follow-up) lives in `observations.md` under **Lifecycle → On resolve**. Follow it there; this skill orchestrates *which* observations, *in what order*, and *with what safety gate*.
 
 ## Arguments
 
@@ -1080,11 +1080,11 @@ Re-read the affected code per `observations.md` → **Before working on an obser
 
 Stop and present, even when nothing is blocked:
 
-- **To resolve** — ordered list (order is your judgment; respect obvious `related-observations` dependencies). Per item: retention trim plan, target commit message, `related-commits` handling, and `## Follow-up` target when `retention: promote`.
+- **To resolve** — ordered list (order is your judgment; respect obvious `related-observations` dependencies). Per item: retention trim plan, target commit message, and `## Follow-up` target when `retention: promote`.
 - **To discard** — observations the gate found are no longer valid, each with proposed `discard-reason`.
 - **Blocked** — each with the reason and a **concrete suggestion** for how to proceed.
 
-Decide commit composition, messages, and `related-commits` handling yourself — present them as decisions in the plan, not as questions. Surface a question **only** for genuine ambiguity the code can't settle: e.g. unrelated changes in the working tree where it's unclear whether a file belongs in the observation's commit. Never ask about obvious grouping or message wording.
+Decide commit composition and messages yourself — present them as decisions in the plan, not as questions. Surface a question **only** for genuine ambiguity the code can't settle: e.g. unrelated changes in the working tree where it's unclear whether a file belongs in the observation's commit. Never ask about obvious grouping or message wording.
 
 Wait for user approval. Approving the plan covers both the manual's "explicit user confirmation to resolve" and its "permission to commit". Execute nothing before approval.
 
@@ -1095,7 +1095,7 @@ In planned order, for each observation:
 - Apply the `observations.md` resolve ritual (or discard ritual for discards). For `.html` files, keep the `<meta obs-*>` tags in sync with the `<dl class="frontmatter">` per `observations-html-experiment.md`.
 - Set `resolved-date` and `updated` to today's date (today is provided in session context — never shell out for it).
 - Update related docs: `related-observations` cross-links, and any doc named by a `promote` follow-up (surface the follow-up to the user before closing).
-- Commit the fix changes **and** the observation file together. Then capture the commit SHA, write it into `related-commits`, and `git commit --amend` so the SHA lands inside its own commit.
+- Commit the fix changes **and** the observation file together.
 
 ### 5. Wrap up
 
