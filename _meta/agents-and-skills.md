@@ -673,7 +673,7 @@ Overwrite without prompting.
 ```markdown
 ---
 description: Decide between competing solution paths without anchoring on inflated effort estimates, phantom urgency, or a bias toward compromise. Use when about to present multiple viable options for the same problem, or when weighing a quick fix against a deeper fix.
-allowed-tools: Read, Glob, Grep, Bash(git *), AskUserQuestion
+allowed-tools: Read, Glob, Grep, Bash(git *)
 effort: medium
 ---
 
@@ -741,7 +741,7 @@ A quick or partial fix is the correct answer only when:
 
 4. **Recommend the right-fit path** — explain why in one or two sentences. The recommendation is the path that fits the problem, not the most ambitious and not the fastest.
 
-5. **Ask the user via `AskUserQuestion`** — one option per real path, AI-adjusted estimate in the description, `preview` showing the concrete trade. Tag the recommendation with the *reason*, not just "(Recommended)".
+5. **Present via the decision protocol** — deliver the options using the walkthrough format in `~/.claude/rules/decision-protocol.md` (one point per message, template per point, AI-adjusted estimate, recommendation tagged with its *reason*). Do not use `AskUserQuestion`.
 
 ## What this skill is not
 

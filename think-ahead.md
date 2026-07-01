@@ -13,7 +13,7 @@
 
 ## Global Rules Maintenance
 
-- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding definition in `~/.claude/rules/agents-and-skills.md` with the exact current content of the changed files — that file is the source of truth for new environment setup (not `README.md`, which only links to it)
+- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding definition in `~/.claude/rules/_meta/agents-and-skills.md` with the exact current content of the changed files — that file is the source of truth for new environment setup (not `README.md`, which only links to it)
 
 ## Production Safety
 
@@ -85,13 +85,12 @@ How to write the wrap-up message after finishing a task — the explanation of w
 - In plan mode: ask all clarifying questions _before_ producing the plan
 - For non-trivial tasks: outline approach and concerns before coding
 - Surface trade-offs explicitly
-- Use `AskUserQuestion` for bounded choices — plain text for open-ended questions. For formatting rules, see "Interactive Options via `AskUserQuestion`" below
+- Present decisions via the protocol in @~/.claude/rules/decision-protocol.md — not `AskUserQuestion`. Open-ended questions stay plain prose
 
 ## Multi-Option Decisions
 
-- **IMPORTANT**: When facing a problem with multiple viable solutions (architecture forks, quick-fix vs root-cause, competing approaches) — invoke the `ahead:decision` skill (if available) before presenting options
-- Counters two specific Claude defaults: human-developer effort estimates (use AI-adjusted instead) and unverified urgency claims ("users may be hitting this" without confirming deployment/usage)
-- Default recommendation is the right-fit path — not the compromise, not the fastest — unless urgency is verified
+- **IMPORTANT**: Present every decision — including multi-option ones — via the protocol in @~/.claude/rules/decision-protocol.md
+- When the decision has multiple viable solution paths (architecture forks, quick-fix vs root-cause, competing approaches), invoke the `ahead:decision` skill (if available) first for the effort/urgency discipline, then present via the protocol
 - Does not apply when only one viable path exists
 
 ## Frontend & Design Work
@@ -145,9 +144,8 @@ Applies when finishing a task tracked in a current-work file or resolved through
 
 ## Code Cleanup: Suggest, Don't Auto-Clean
 
-- **Do not remove** debug logs (`console.log`, `print`, `debugger`) or commented-out code automatically
-- After finishing the primary task, present found items via `AskUserQuestion` with `multiSelect: true` — each option describes what and where (e.g., "console.log in handleSubmit (auth.ts:42)")
-- Only in files you're already touching — don't hunt for cleanup in unrelated files
+- **Do not automatically remove** debug logs, debug scripts (`console.log`, `print`, `debugger`) or commented-out code
+- Instead, after finishing the primary/current task, suggest their removal in a wrap-up message, and let the user decide whether to remove them
 
 ## Comment the "Why", Not the "What"
 
@@ -190,7 +188,7 @@ Applies when finishing a task tracked in a current-work file or resolved through
 ## Clarification Over Assumption
 
 - When ambiguous, ask rather than guess
-- Use `AskUserQuestion` for bounded choices — plain text for open-ended questions
+- Present bounded choices via @~/.claude/rules/decision-protocol.md; open-ended clarification stays plain prose
 
 ## Read the Intent
 
@@ -203,17 +201,9 @@ Applies when finishing a task tracked in a current-work file or resolved through
 - Include concrete examples when the difference between options isn't obvious
 - Anticipate likely follow-up questions and answer them upfront
 
-## Interactive Options via `AskUserQuestion`
+## Presenting Decisions
 
-- **IMPORTANT**: Before invoking `AskUserQuestion`, write a prose lead-in (the message that precedes the tool call) that sets up the scenario and walks through the options in plain, human terms — like a coworker thinking it through out loud. The option cards summarize the choice; they never replace this explanation
-- The lead-in must cover, in this order: what situation or finding triggered the question, what each option concretely does and its trade-off, and a concrete example (or before/after) whenever the difference between options isn't self-evident
-- The lead-in must state and justify a recommendation in prose — not only the `(Recommended)` tag and the card description (reinforces "Multi-Option Decisions" and the Recommendations bullet below)
-- Every option must carry enough context for the user to decide without follow-up
-- Labels: concise but specific — never "Option A" / "Option B"
-- Descriptions: explain what changes and what the user gets, include trade-offs — don't assume the user knows the implications
-- Aliases: spell out any short label, technical term, or shorthand used in an option or its label
-- Previews: use `preview` field for code snippets, diffs, or before/after comparisons
-- Recommendations: explain _why_ in the description — don't just tag "(Recommended)"
+- See @~/.claude/rules/decision-protocol.md — the agenda + one-point-at-a-time walkthrough for presenting decisions
 
 ## Context Hygiene
 
