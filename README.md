@@ -19,7 +19,7 @@ Claude Code loads `.md` files from `~/.claude/rules/` as global instructions for
 
 Dormant experiments live in `_inactive/` — kept on disk and committed, but excluded from context via `claudeMdExcludes` (the whole folder is one exclude entry, so future dormant rules just get moved there). Currently it holds `observations-html-experiment.md` + `observation-template.html`, which overrode the observation **format** to HTML. Re-enable an experiment by moving its files back to `rules/` and re-adding its `See @`-import line in `CLAUDE.md`. Only one observation-format/content experiment should be active at a time.
 
-Internal, non-instruction files live in `_meta/` — kept on disk and committed, but excluded from context via `claudeMdExcludes` (the whole folder is one exclude entry). Currently it holds `agents-and-skills.md`, the verbatim deploy source of truth for agents & skills. Unlike `_inactive/`, these files are **active** — they're just read on demand (when recreating an agent or skill), not loaded every session.
+Internal, non-instruction files live in `_meta/` — kept on disk and committed, but excluded from context via `claudeMdExcludes` (the whole folder is one exclude entry). It holds the agents & skills deploy source of truth: `agents-and-skills.md` is the **index** (mapping + deploy guide), and the verbatim definitions live one file per unit under `_meta/agents/`, `_meta/skills/`, and `_meta/templates/`. Unlike `_inactive/`, these files are **active** — they're just read on demand (when recreating an agent or skill), not loaded every session.
 
 This README also serves as the setup guide for deploying the full environment: rules, agents, and skills.
 
@@ -71,7 +71,7 @@ Why each is excluded:
 | Entry | Reason |
 |-------|--------|
 | `README.md` | Setup guide — not a behavioral rule |
-| `_meta` | Internal, non-instruction tooling — holds `agents-and-skills.md` (the deploy source of truth); excluding the **directory** keeps future internal docs out of context too |
+| `_meta` | Internal, non-instruction tooling — holds the agents & skills deploy source of truth (`agents-and-skills.md` index + per-unit files under `agents/`, `skills/`, `templates/`); excluding the **directory** keeps every file inside out of context |
 | `specs.md` | Opt-in framework — read only on the triggers in `think-ahead.md` |
 | `docs` | Spec groups and historical records — excluding the **directory** also keeps future specs out of the default context |
 | `_inactive` | Dormant experiments/rules — excluding the **directory** keeps them on disk (and committed) while out of context; re-enable by moving files back to `rules/` |
@@ -82,7 +82,7 @@ If `settings.json` already exists, merge the `claudeMdExcludes` array into it.
 
 ### 4. Deploy agents & skills
 
-Agent and skill definitions are kept verbatim in [`_meta/agents-and-skills.md`](_meta/agents-and-skills.md) — the source of truth for deploying them on a new machine. Read that file only when creating, editing, or recreating an agent or skill; it is intentionally kept out of Claude's default context.
+Agent and skill definitions are kept verbatim under `_meta/`, one file per unit (`_meta/agents/`, `_meta/skills/`, `_meta/templates/`), indexed by [`_meta/agents-and-skills.md`](_meta/agents-and-skills.md) — which maps each file to its deploy target and carries the copy-paste deploy commands. Read those files only when creating, editing, or recreating an agent or skill; they are intentionally kept out of Claude's default context.
 
 ### 5. Recommended settings
 

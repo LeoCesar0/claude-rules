@@ -13,7 +13,8 @@
 
 ## Global Rules Maintenance
 
-- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the corresponding definition in `~/.claude/rules/_meta/agents-and-skills.md` with the exact current content of the changed files — that file is the source of truth for new environment setup (not `README.md`, which only links to it)
+- After any changes to agents (`~/.claude/agents/`) or skills (`~/.claude/skills/ahead:*/`), update the matching per-unit mirror under `~/.claude/rules/_meta/` — `agents/<name>.md`, `skills/ahead-<name>.md`, or `templates/<name>.html` — with the exact current content of the changed file; those mirrors are the source of truth for new environment setup (not `README.md`, which only links to them)
+- Update the index `~/.claude/rules/_meta/agents-and-skills.md` only when a unit is **added or removed** (new/deleted mirror file + its mapping row), not on content edits to an existing unit
 
 ## Production Safety
 

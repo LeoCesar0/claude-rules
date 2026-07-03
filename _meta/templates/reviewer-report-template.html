@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{TÍTULO CURTO PARA A ABA}}</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --ink: #1c2024;
+        --ink-soft: #55606b;
+        --line: #e2e6ea;
+        --accent: #1a5fb4;
+        --accent-soft: #e8f0fb;
+        --warn: #b26a00;
+        --warn-soft: #fbf0dd;
+        --neutral: #6b7480;
+        --neutral-soft: #eef1f4;
+        --good: #1c7a45;
+        --good-soft: #e4f4ea;
+        --bad: #b3261e;
+        --bad-soft: #fbe9e7;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 1280px; margin: 0 auto; padding: 40px 24px 72px; }
+      header.top { border-bottom: 2px solid var(--line); padding-bottom: 20px; margin-bottom: 28px; }
+      .eyebrow { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 8px; }
+      h1 { font-size: 27px; line-height: 1.25; margin: 0 0 10px; letter-spacing: -.01em; }
+      .subtitle { color: var(--ink-soft); margin: 0 0 16px; font-size: 15.5px; }
+      .mr {
+        display: inline-flex; align-items: baseline; gap: 8px;
+        background: var(--accent-soft); border: 1px solid #c7ddf7; border-radius: 8px;
+        padding: 9px 13px; font-size: 14px;
+      }
+      .mr .hl { color: var(--accent); }
+      .mr a { color: var(--accent); font-family: var(--mono); font-size: 13px; word-break: break-all; text-decoration: none; }
+      .mr a:hover { text-decoration: underline; }
+      h2 { font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); margin: 40px 0 14px; }
+      p { margin: 0 0 14px; }
+      .lead { font-size: 16.5px; color: var(--ink); }
+      .note { background: var(--neutral-soft); border-left: 3px solid var(--neutral); border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 14.5px; color: var(--ink-soft); }
+      .note .hl { color: var(--ink); }
+      .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin: 0 0 16px; }
+      .card h3 { margin: 0 0 4px; font-size: 18px; }
+      .card .tag { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+      .badges { margin: 10px 0 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+      .badge { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .02em; }
+      .badge.removed { background: var(--warn-soft); color: var(--warn); }
+      .badge.partial { background: var(--warn-soft); color: var(--warn); }
+      .badge.recover { background: var(--accent-soft); color: var(--accent); }
+      .badge.good { background: #e4f4ea; color: #1c7a45; }
+      .card p { font-size: 15px; }
+      .k { color: var(--ink-soft); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .03em; display: block; margin-bottom: 2px; }
+      .block { margin: 12px 0; }
+      code { font-family: var(--mono); font-size: 13px; background: var(--neutral-soft); padding: 1px 5px; border-radius: 4px; }
+      pre { font-family: var(--mono); font-size: 12.5px; background: #1c2024; color: #e8ebf0; padding: 12px 14px; border-radius: 8px; overflow-x: auto; margin: 8px 0 0; line-height: 1.5; }
+      pre .c { color: #8b96a5; }
+      ol.options { list-style: none; counter-reset: opt; padding: 0; margin: 0; }
+      ol.options > li { counter-increment: opt; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px 18px 58px; margin: 0 0 12px; }
+      ol.options > li::before { content: counter(opt); position: absolute; left: 18px; top: 18px; width: 26px; height: 26px; background: var(--accent); color: #fff; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+      ol.options h4 { margin: 0 0 4px; font-size: 16px; }
+      ol.options .trade { font-size: 14px; color: var(--ink-soft); margin: 0; }
+      .opinion { background: var(--accent-soft); border: 1px solid #c7ddf7; border-radius: 12px; padding: 20px 22px; margin: 8px 0 0; }
+      .opinion h3 { margin: 0 0 8px; font-size: 16px; color: var(--accent); }
+      .opinion p { margin: 0 0 8px; font-size: 15.5px; }
+      .opinion p:last-child { margin: 0; }
+      .ask { background: var(--ink); color: #eef1f4; border-radius: 12px; padding: 20px 22px; margin: 16px 0 0; font-size: 16px; }
+      .ask .hl { color: #fff; }
+      table.map { width: 100%; border-collapse: collapse; margin: 4px 0 0; font-size: 14.5px; }
+      table.map th, table.map td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      table.map th { font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--ink-soft); border-bottom: 2px solid var(--line); }
+      table.map td.id { font-family: var(--mono); font-weight: 700; color: var(--accent); white-space: nowrap; }
+      table.map tr:last-child td { border-bottom: none; }
+      table.map .origin { display: inline-block; margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--warn); background: var(--warn-soft); padding: 1px 8px; border-radius: 999px; }
+      /* Two-column layout with a sticky decision rail on the right (DEFAULT for decision reports). */
+      .layout { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 32px; align-items: start; }
+      .main { min-width: 0; }
+      .rail { position: sticky; top: 24px; align-self: start; }
+      .decision-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: 0 4px 18px rgba(28, 32, 36, .07); max-height: calc(100vh - 48px); overflow-y: auto; }
+      .rail-title { margin: 0 0 2px; font-size: 17px; letter-spacing: -.01em; }
+      .rail-note { margin: 0 0 14px; font-size: 13px; color: var(--ink-soft); }
+      /* Single emphasis mechanism — semibold. Use .hl for ALL keyword emphasis; never mix with <b>/<strong>. */
+      .hl { font-weight: 600; }
+      .rail .options > li { background: var(--bg); border: 1px solid var(--line); padding: 12px 14px 12px 44px; margin: 0 0 10px; border-radius: 10px; }
+      .rail .options > li::before { left: 12px; top: 12px; width: 22px; height: 22px; font-size: 12px; }
+      .rail .options h4 { font-size: 14px; margin: 0 0 3px; }
+      .rail .options .trade { font-size: 12.5px; line-height: 1.45; }
+      .rail .options > li:last-child { margin-bottom: 0; }
+
+      /* ============================================================
+         OPTIONAL — Interactive decision capture.
+         Reviewer picks one option per question, optionally types a
+         reason, then copies a formatted summary to paste in the MR.
+         Fully data-driven (see the <script> at the bottom): to reuse,
+         only edit the HTML/data-* attributes — never the JS.
+         Colors are decoupled from meaning: assign any -opt-* palette
+         class to any option. Delete this whole block + the matching
+         HTML + the <script> for a report with no interactive choices.
+         ============================================================ */
+      .decide { margin: 18px 0 0; padding-top: 16px; border-top: 1px dashed var(--line); }
+      .decide-label { font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--ink-soft); font-weight: 700; margin: 0 0 10px; }
+      .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+      .choice { cursor: pointer; border-radius: 999px; padding: 8px 15px; font: inherit; font-size: 13px; font-weight: 600; background: transparent; border: 1.5px solid var(--neutral); color: var(--ink-soft); transition: background .12s, color .12s, border-color .12s; }
+      .choice:hover { border-color: var(--ink-soft); }
+      /* Color palette — pick one per option; not tied to any specific meaning. */
+      .choice.-opt-danger  { border-color: var(--bad); color: var(--bad); }
+      .choice.-opt-good    { border-color: var(--good); color: var(--good); }
+      .choice.-opt-accent  { border-color: var(--accent); color: var(--accent); }
+      .choice.-opt-warn    { border-color: var(--warn); color: var(--warn); }
+      .choice.-opt-neutral { border-color: var(--neutral); color: var(--ink-soft); }
+      .choice[aria-pressed="true"].-opt-danger  { background: var(--bad); color: #fff; }
+      .choice[aria-pressed="true"].-opt-good    { background: var(--good); color: #fff; }
+      .choice[aria-pressed="true"].-opt-accent  { background: var(--accent); color: #fff; }
+      .choice[aria-pressed="true"].-opt-warn    { background: var(--warn); color: #fff; }
+      .choice[aria-pressed="true"].-opt-neutral { background: var(--neutral); color: #fff; }
+      .motive { display: none; margin-top: 12px; }
+      .motive.-open { display: block; }
+      .motive .k { margin-bottom: 6px; }
+      .motive textarea { width: 100%; min-height: 62px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; font: inherit; font-size: 14px; color: var(--ink); resize: vertical; background: var(--bg); }
+      .motive textarea:focus { outline: none; border-color: var(--accent); background: #fff; }
+      .summary { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+      .summary h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .03em; color: var(--ink-soft); }
+      .sum-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 12.5px; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+      .sum-row:last-of-type { border-bottom: none; }
+      .sum-item { color: var(--ink-soft); }
+      .sum-choice { font-weight: 700; white-space: nowrap; text-align: right; }
+      .sum-choice.-pending { color: var(--neutral); font-weight: 400; font-style: italic; }
+      .sum-choice.-opt-danger  { color: var(--bad); }
+      .sum-choice.-opt-good    { color: var(--good); }
+      .sum-choice.-opt-accent  { color: var(--accent); }
+      .sum-choice.-opt-warn    { color: var(--warn); }
+      .sum-choice.-opt-neutral { color: var(--ink-soft); }
+      .copy-btn { margin-top: 14px; width: 100%; padding: 11px; border-radius: 10px; border: none; background: var(--accent); color: #fff; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; transition: background .12s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .copy-btn svg { width: 16px; height: 16px; flex: none; }
+      .copy-btn:hover:not(:disabled) { background: #164e93; }
+      .copy-btn:disabled { background: var(--neutral-soft); color: var(--neutral); cursor: not-allowed; }
+      .copy-status { text-align: center; font-size: 12px; color: var(--ink-soft); margin: 8px 0 0; min-height: 1.1em; }
+
+      @media (max-width: 920px) {
+        .wrap { max-width: 820px; }
+        .layout { grid-template-columns: 1fr; gap: 0; }
+        .rail { position: static; margin-top: 24px; }
+        .decision-card { max-height: none; overflow: visible; }
+      }
+      footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--neutral); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <p class="eyebrow">{{RÓTULO CONTEXTUAL — ex.: "Decisão para revisão · <contexto>"}}</p>
+        <h1>{{TÍTULO — a pergunta central ou o assunto}}</h1>
+        <p class="subtitle">{{1–2 frases enquadrando a leitura; destaque 1 termo com <span class="hl">…</span>}}</p>
+        <!-- Link-âncora que o leitor precisa (MR/PR/ticket). Remova o bloco inteiro se não houver. -->
+        <span class="mr"><span class="hl">{{RÓTULO:}}</span>
+          <a href="{{URL}}">{{URL}}</a>
+        </span>
+      </header>
+
+      <!-- RELATÓRIO DE DECISÃO → mantenha o .layout + .rail (card sticky à direita).
+           RELATÓRIO SÓ-RESUMO → remova <div class="layout">, </div><!-- .main -->, o <aside class="rail"> e </div><!-- .layout -->,
+           deixando o conteúdo direto no .wrap em coluna única. E remova o <script> do rodapé. -->
+      <div class="layout">
+      <div class="main">
+
+        <!-- CONTEXTO: traduza TODO jargão interno. Se citar um lote/grupo/task nomeado internamente,
+             explique o que é e dê a tabela de mapping — o leitor não conhece o vocabulário do projeto. -->
+        <h2>Contexto: {{o que o leitor precisa saber antes}}</h2>
+        <p>{{explique em 1 parágrafo; 1–2 <span class="hl">termos-chave</span>}}</p>
+        <table class="map">
+          <thead><tr><th>{{ID}}</th><th>{{Descrição}}</th></tr></thead>
+          <tbody>
+            <tr><td class="id">{{id}}</td><td>{{descrição com 1 <span class="hl">termo-chave</span>}}</td></tr>
+          </tbody>
+        </table>
+
+        <!-- ITENS: um card por item. Badge de status + exemplo concreto + "o que X significa".
+             O bloco .decide no fim do card é OPCIONAL (captura de decisão) — veja o comentário do <script>. -->
+        <div class="card">
+          <h3>{{título do item}}</h3>
+          <span class="tag">{{subtítulo curto / categoria}}</span>
+          <div class="badges">
+            <span class="badge partial">{{status}}</span>
+            <span class="badge recover">{{status}}</span>
+          </div>
+          <p>{{explicação; 1–2 <span class="hl">destaques</span> no máximo}}</p>
+          <div class="block">
+            <span class="k">Exemplo</span>
+            <pre>{{exemplo concreto — dado real, código, ou cenário}}</pre>
+          </div>
+          <p style="margin:12px 0 0"><span class="k">{{Rótulo}}</span> {{explicação com 1 <span class="hl">destaque</span>}}</p>
+
+          <!-- OPCIONAL — captura de decisão deste item.
+               data-item = chave única; data-title = título usado no texto copiado.
+               Cada .choice: data-opt (chave), texto visível (label curto p/ resumo),
+               data-label (label completo p/ o texto copiado; cai no texto visível se ausente).
+               Escolha 1 classe -opt-* de cor por opção (sem vínculo com significado). -->
+          <div class="decide" data-item="{{q1}}" data-title="{{Título completo do item p/ o texto copiado}}">
+            <p class="decide-label">Sua decisão</p>
+            <div class="choices" role="group" aria-label="Decisão — {{item}}">
+              <button type="button" class="choice -opt-danger" data-opt="{{opt-a}}" data-label="{{Rótulo completo A}}" aria-pressed="false">{{Rótulo curto A}}</button>
+              <button type="button" class="choice -opt-good" data-opt="{{opt-b}}" data-label="{{Rótulo completo B}}" aria-pressed="false">{{Rótulo curto B}}</button>
+              <button type="button" class="choice -opt-accent" data-opt="{{opt-c}}" data-label="{{Rótulo completo C}}" aria-pressed="false">{{Rótulo curto C}}</button>
+            </div>
+            <div class="motive">
+              <span class="k">Motivo (opcional)</span>
+              <textarea placeholder="Por que essa escolha?"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPINIÃO (opcional): PRIMEIRA PESSOA quando é a posição do autor. -->
+        <div class="opinion">
+          <h3>Minha opinião</h3>
+          <p>{{posição em 1ª pessoa; 1–2 destaques}}</p>
+        </div>
+
+        <!-- ASK/CTA: a pergunta objetiva ao leitor. -->
+        <div class="ask">
+          <span class="hl">{{Leitor:}}</span> {{a pergunta / o que se espera dele}}
+        </div>
+
+      </div><!-- .main -->
+
+      <!-- CARD DE DECISÃO STICKY — padrão para relatórios de decisão; remova para resumos. -->
+      <aside class="rail">
+        <div class="decision-card">
+          <h2 class="rail-title">{{A decisão}}</h2>
+          <p class="rail-note">{{subtítulo curto}}</p>
+          <ol class="options">
+            <li><h4>{{opção}}</h4><p class="trade">{{trade-off em 1 frase; 1 <span class="hl">destaque</span>}}</p></li>
+            <li><h4>{{opção}}</h4><p class="trade">{{trade-off}}</p></li>
+          </ol>
+
+          <!-- OPCIONAL — resumo ao vivo + botão copiar (par do bloco .decide nos cards).
+               data-decisions marca a raiz que o script lê. data-copy-heading = 1ª linha do markdown copiado.
+               Um .sum-row por pergunta; data-sum casa com o data-item do card correspondente.
+               Rótulos das linhas copiadas (Decisão/Motivo) e textos de status são configuráveis
+               via data-decision-label / data-motive-label / data-ready-text / data-pending-text (têm default). -->
+          <div class="summary" data-decisions data-copy-heading="{{## Título do bloco copiado}}">
+            <h3>Suas decisões</h3>
+            <div class="sum-row"><span class="sum-item">{{1. item}}</span><span class="sum-choice -pending" data-sum="{{q1}}">a decidir</span></div>
+            <button type="button" class="copy-btn" id="copyBtn" disabled>
+              <span class="copy-icon" aria-hidden="true"></span>
+              <span class="copy-label">Copiar decisões</span>
+            </button>
+            <p class="copy-status" id="copyStatus">Responda todas para habilitar a cópia.</p>
+          </div>
+        </div>
+      </aside>
+      </div><!-- .layout -->
+
+      <footer>{{rodapé: projeto · contexto · referência}}</footer>
+    </div>
+
+    <!-- OPCIONAL — motor da captura de decisão. Genérico e data-driven: NÃO edite este script.
+         Ele só roda se existir [data-decisions] na página. Remova-o em reports sem escolhas.
+         Fallback de clipboard cobre abertura via file:// (execCommand). -->
+    <script>
+      (function () {
+        var root = document.querySelector('[data-decisions]');
+        if (!root) return; // feature opcional — ausente em reports de resumo
+
+        var copyBtn = root.querySelector('.copy-btn');
+        var copyStatus = root.querySelector('.copy-status');
+        var copyIcon = copyBtn.querySelector('.copy-icon');
+        var copyLabel = copyBtn.querySelector('.copy-label');
+
+        var HEADING = root.getAttribute('data-copy-heading') || '';
+        var DECISION_LABEL = root.getAttribute('data-decision-label') || 'Decisão';
+        var MOTIVE_LABEL = root.getAttribute('data-motive-label') || 'Motivo';
+        var READY_TEXT = root.getAttribute('data-ready-text') || 'Pronto para copiar.';
+        var PENDING_TEXT = root.getAttribute('data-pending-text') || 'Responda todas para habilitar a cópia.';
+
+        var ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        if (copyIcon) copyIcon.innerHTML = ICON_COPY;
+
+        // Discover every question from the DOM; insertion order drives the copied numbering.
+        var state = {}; // itemId -> { choice, full, short, colorClass, motive, title }
+        document.querySelectorAll('.decide').forEach(function (block) {
+          var id = block.getAttribute('data-item');
+          state[id] = { choice: null, full: '', short: '', colorClass: '', motive: '', title: block.getAttribute('data-title') || id };
+          var buttons = block.querySelectorAll('.choice');
+          var motiveWrap = block.querySelector('.motive');
+          var textarea = block.querySelector('textarea');
+
+          buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var text = btn.textContent.trim();
+              state[id].choice = btn.getAttribute('data-opt');
+              state[id].full = btn.getAttribute('data-label') || text; // copied text
+              state[id].short = btn.getAttribute('data-short') || text; // summary text
+              state[id].colorClass = (btn.className.match(/-opt-[a-z]+/) || [''])[0];
+              buttons.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+              if (motiveWrap) motiveWrap.classList.add('-open'); // reveal on first choice; motive stays optional
+              refresh();
+            });
+          });
+          if (textarea) {
+            textarea.addEventListener('input', function () { state[id].motive = textarea.value.trim(); });
+          }
+        });
+
+        function allChosen() {
+          return Object.keys(state).every(function (id) { return state[id].choice; });
+        }
+
+        function refresh() {
+          Object.keys(state).forEach(function (id) {
+            var span = document.querySelector('[data-sum="' + id + '"]');
+            if (!span) return;
+            var s = state[id];
+            span.className = 'sum-choice ' + (s.choice ? s.colorClass : '-pending');
+            span.textContent = s.choice ? s.short : (span.getAttribute('data-pending') || 'a decidir');
+          });
+          var ready = allChosen();
+          copyBtn.disabled = !ready;
+          copyStatus.textContent = ready ? READY_TEXT : PENDING_TEXT;
+        }
+
+        function buildText() {
+          var lines = [];
+          if (HEADING) { lines.push(HEADING); lines.push(''); }
+          Object.keys(state).forEach(function (id, i) {
+            var s = state[id];
+            lines.push('### ' + (i + 1) + '. ' + s.title);
+            lines.push(DECISION_LABEL + ': ' + s.full);
+            if (s.motive) lines.push(MOTIVE_LABEL + ': ' + s.motive);
+            lines.push('');
+          });
+          return lines.join('\n').trim() + '\n';
+        }
+
+        function copyText(text) {
+          // Prefer the async Clipboard API; fall back to execCommand for file:// / insecure contexts.
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return legacyCopy(text); });
+          }
+          return Promise.resolve(legacyCopy(text));
+        }
+
+        function legacyCopy(text) {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.top = '0';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            var ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+            return ok;
+          } catch (e) {
+            return false;
+          }
+        }
+
+        var revertTimer = null;
+        copyBtn.addEventListener('click', function () {
+          if (!allChosen()) return;
+          copyText(buildText()).then(function (ok) {
+            copyStatus.textContent = ok ? 'Copiado! Cole no comentário do MR.' : 'Não foi possível copiar automaticamente — selecione e copie manualmente.';
+            if (ok && copyIcon) {
+              copyIcon.innerHTML = ICON_CHECK;
+              copyLabel.textContent = 'Copiado';
+              if (revertTimer) clearTimeout(revertTimer);
+              revertTimer = setTimeout(function () {
+                copyIcon.innerHTML = ICON_COPY;
+                copyLabel.textContent = 'Copiar decisões';
+              }, 2000);
+            }
+          });
+        });
+
+        refresh();
+      })();
+    </script>
+  </body>
+</html>
