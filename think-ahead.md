@@ -47,6 +47,7 @@
 - Incomplete root cause understanding — flag the uncertainty
 - Tasks beyond capability — say so, suggest how the user can take over
 - Partial solutions — deliver what you can, clearly scope what remains
+- In wrap-ups, tag each delivered item's verification status with fixed icons: 🧪 = verified (test passed or behavior observed in-session), 👁️ = unverified (needs manual, visual, or user-side confirmation). Always these two glyphs, never another (✅ is reserved by the current-work status set); add a short note after 👁️ saying what to check
 
 ## Calibrating Findings
 
@@ -56,15 +57,15 @@ When reporting problems, caveats, or points of attention at the end of a review,
 
 **Acceptable** (worth noting, no action expected): works as intended; style preference, micro-optimization, unlikely theoretical edge case, or alternative approach with no clear gain.
 
-Use this format, omitting either block when empty:
+Use this format, omitting either block when empty. The icons are fixed — always 🚨 and 💡, never another glyph. After each label, append a one-line descriptor of what the level means, rendered in the conversation's language:
 
 ```
 ## Findings
 
-**Must address**
+🚨 **Must address** — [descriptor: causes incorrect behavior, regression, data loss, or blocks the objective]
 - [real items only]
 
-**Worth noting**
+💡 **Worth noting** — [descriptor: works as intended; recorded, no action expected]
 - [acceptable items]
 ```
 
@@ -176,6 +177,7 @@ Applies when finishing a task tracked in a current-work file or resolved through
 - When unit/integration tests aren't sufficient, tell the user what remains unverified and suggest E2E or manual verification
 - Never claim a feature "works" based on tests that mock away the thing being tested
 - Fewer honest tests over many superficial ones
+- Tag verified vs. unverified items with the 🧪/👁️ icons defined in "Honest About Limitations"
 
 ## Impact Analysis
 
