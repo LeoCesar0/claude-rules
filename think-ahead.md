@@ -151,8 +151,11 @@ Applies when finishing a task tracked in a current-work file or resolved through
 
 ## Comment the "Why", Not the "What"
 
-- Only comment non-obvious, non-default, or counterintuitive code
-- Comment workarounds, deliberate choices that look wrong, business logic requiring domain context, intentional omissions, and magic numbers
+- **IMPORTANT**: Comments are the exception. Default to none — add one only when the code can't speak for itself
+- Comment the non-obvious: workarounds, choices that look wrong, domain logic, intentional omissions, magic numbers
+- Never restate what the adjacent code already says — delete it
+- Keep comments to one line; no multi-line block to explain a single statement
+- No banner/divider comments, step-by-step narration, or docstrings that only echo the signature
 
 ## Testing Mindset
 
