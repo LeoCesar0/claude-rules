@@ -24,6 +24,8 @@ When an observation fits multiple types, use the higher-priority one.
 
 Observations may exist as `.html` (from the HTML-format experiment) or `.md`. Do not convert existing files between formats, and do not edit a file solely to migrate it. New observations are written in `.md` unless an active format-override experiment referenced in `~/.claude/CLAUDE.md` says otherwise.
 
+Scale the observation's depth to its `retention` from the first draft: `disposable` → a few lines (what + where + fix direction); `reference`/`promote` → full context. Don't write long to trim later.
+
 ```markdown
 ---
 status: open | in-progress | awaiting-validation | resolved | discarded
@@ -140,7 +142,7 @@ Status transitions: open → in-progress → awaiting-validation → resolved | 
   - `reference` — light trim: preserve examples, reasoning, trade-offs, and failed approaches worth knowing (under `## Things tried that didn't work`). Drop only log noise and self-introduced issues. A new reader must still be able to learn from the file
   - `promote` — same trim as `reference`, plus append a `## Follow-up` section naming the target file/path where the content should be lifted (e.g., "extract to `docs/references/editor-observer.md`"). Surface this follow-up to the user before closing
 - Set `status: resolved`, `resolved-date` to current date, update `updated`
-- Add `## Resolution` section describing what was done (may fold in the `## Pending Validation` content)
+- Add a `## Resolution` section whose depth matches `retention`: `disposable` → 1–2 lines (what changed + why), no process narrative; `reference`/`promote` → full account (problem, root cause, approach, trade-offs, what was tried). Never pad a simple fix to look thorough (may fold in `## Pending Validation`)
 
 **On discard:**
 - Set `status: discarded`, `discard-reason` with brief explanation, update `updated`
