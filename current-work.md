@@ -53,8 +53,13 @@ For a `.md` current-work file, mirror the same sections and tables in Markdown.
   Never renumber on reset.
 - **`Status`** — a single `verdict` badge with one fixed emoji per state,
   exactly: `verdict accent` 🔄 (em andamento), `verdict neutral` ⬜ (aberto),
-  `verdict warn` ⏸️ (aguardando/bloqueado), `verdict good` ✅ (feito). One emoji
-  per verdict — never vary the emoji used for a given verdict.
+  `verdict warn` ⏸️ (aguardando validação — trabalho implementado, falta o
+  usuário validar/aprovar), `verdict bad` 🔒 (bloqueada — não iniciada,
+  aguardando decisão ou input do usuário antes de poder começar), `verdict
+  good` ✅ (feito). One emoji per verdict — never vary the emoji used for a
+  given verdict. **Never conflate ⏸️ and 🔒** — ⏸️ means the work is done and
+  waiting on the user; 🔒 means the work has not started because it is
+  waiting on the user first.
 - **`Obs`** — a relative, clickable `<a href>` to the observation file
   (`../observations/<area>/<type>/YYYY-MM-DD-slug.html|md`), link text = short
   label. Use `—` when there is no observation.

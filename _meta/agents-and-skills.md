@@ -43,6 +43,7 @@ Each skill is a folder `~/.claude/skills/ahead:<name>/` containing a `SKILL.md`.
 | `skills/ahead-resolve.md` | `~/.claude/skills/ahead:resolve/SKILL.md` |
 | `skills/ahead-autopilot.md` | `~/.claude/skills/ahead:autopilot/SKILL.md` |
 | `skills/ahead-reviewer-report.md` | `~/.claude/skills/ahead:reviewer-report/SKILL.md` |
+| `skills/ahead-reference-docs.md` | `~/.claude/skills/ahead:reference-docs/SKILL.md` |
 
 ### Templates
 
