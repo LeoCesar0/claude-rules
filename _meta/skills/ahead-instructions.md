@@ -34,7 +34,7 @@ Priority order for instruction content:
 ### Writing rules
 
 - Empirical language — direct, observable, verifiable. No "be careful", "consider", "try to". Say what to do.
-- One rule per bullet. No compound instructions.
+- One rule per bullet. No compound instructions — this includes tacking on a rationale, a mechanism already enforced elsewhere (frontmatter, a referenced skill), or a contrast clause ("unlike X"). State the rule alone; the why stays in the approval discussion, not the file.
 - Every rule must be testable — you can look at output and say "followed" or "violated"
 - Examples only when the correct behavior isn't obvious from the rule itself
 - Scope each file to one purpose. Rules ≠ agents ≠ skills ≠ CLAUDE.md.
