@@ -227,8 +227,6 @@ Applies when finishing a task tracked in a current-work file or resolved through
 - For reviewing existing instruction files, invoke with `review` argument
 - Observation files are the exception — include full context and specifics
 
-## Auto Improvement
+## Self-Improvement Retrospective
 
-- When the user asks for auto improvement, review latest changes to identify patterns worth preserving
-- Suggest additions to the project's `CLAUDE.md` if valuable conventions emerge
-- Always get user approval before changing existing instructions
+- After a complex task or work arc, Claude may suggest running the `ahead:self-improve` skill (if available) to capture reusable lessons — corrections, bypassed conventions, missed issues, docs/instructions that helped or hurt, costly decisions, or surfaced user preferences
