@@ -19,7 +19,7 @@ Distinct from internal working docs. The `current-work` dashboard and observatio
 
 ## CRITICAL content rules
 
-These are the learnings the skill exists to enforce. Violating them defeats the report.
+These are the learnings the skill exists to enforce. Violating them defeats the report. Applies `~/.claude/rules/objective-writing.md` at report-writer strictness — the checks below are its enforcement checklist for this artifact.
 
 - **No dev-internal or broken references.** Never link or cite anything the reader cannot open or should not see: local observations, `docs/tmp/` paths, ADR/spec files, tracker/dashboard files, gitignored docs, internal file paths. If the reader needs the rationale, **explain it inline** in the report. Before finishing, grep the file for `docs/`, `observations`, `.md`, and internal path fragments — the only links that survive are external URLs the reader is meant to follow (MR/PR/ticket).
 - **Translate every internal term.** Never use a task ID, batch name, code alias, or project jargon without explaining it in the report itself. When you reference a named group of work (e.g. an internal batch like "Grupo A"), add a one-line explanation **and a mapping table** of what it contains. Assume zero prior exposure to the project's vocabulary.

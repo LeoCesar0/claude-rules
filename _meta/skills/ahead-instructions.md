@@ -20,6 +20,7 @@ Write and review files whose audience is Claude — rules, CLAUDE.md, agents, sk
 - **No tutorials** — state the rule. Don't explain how tools, libraries, or patterns work. Claude has training knowledge. Only document what Claude can't infer from code or general knowledge.
 - **No defaults** — don't instruct behavior Claude already exhibits. Before writing a rule, ask: "Would Claude do this anyway?" If yes, skip it. Only add rules that override defaults, enforce non-obvious constraints, or prevent specific past mistakes.
 - **No redundancy** — check all existing instruction files before writing. Never duplicate a rule unless it's critical enough to reinforce across files. If it exists, reference it — don't restate it.
+- **Objective tone** — no personal/conversational voice or session jargon in the written instruction; see `~/.claude/rules/objective-writing.md`.
 
 ### Hierarchy
 

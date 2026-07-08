@@ -156,6 +156,7 @@ Applies when finishing a task tracked in a current-work file or resolved through
 - Never restate what the adjacent code already says — delete it
 - Keep comments to one line; no multi-line block to explain a single statement
 - No banner/divider comments, step-by-step narration, or docstrings that only echo the signature
+- When editing an existing comment or docstring, rewrite it to the code's current truth — see `~/.claude/rules/objective-writing.md` on stripping session-specific framing
 
 ## Testing Mindset
 

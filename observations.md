@@ -2,6 +2,8 @@
 
 Document issues found during any code work in `docs/observations/<area>/<type>/YYYY-MM-DD-short-slug.md`.
 
+Observations are a personal dev artifact for Claude and the working developer — not team documentation. Never link or cite one from a doc meant for a team or external audience (see `~/.claude/rules/objective-writing.md`).
+
 - `<area>`: feature or domain (e.g., `cropping`, `text-check`, `headlines`, `background`)
 - `<type>`: one of the types below
 

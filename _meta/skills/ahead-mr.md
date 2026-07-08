@@ -33,14 +33,10 @@ fix: Título curto no imperativo
 ## Mudanças
 - Um bullet por mudança lógica
 - Agrupadas por área quando fizer sentido
-
-## Observations resolvidas
-- docs/observations/<area>/<type>/<file>.md — nota de uma linha
 ```
 
 - First line = title with conventional-commits prefix (`fix:`, `feat:`, `refactor:`, `chore:`, `docs:`, `test:`, `perf:`)
 - Infer the prefix from the dominant type of net change
-- Omit `## Observations resolvidas` if none apply
 
 ## Determining the base branch
 
@@ -56,7 +52,7 @@ Read all of the following before writing `mr.md`:
 1. `git log $BASE..HEAD --no-merges --format="%h %s%n%b%n---"` — commit narrative (intent only, not source of truth)
 2. `git diff $BASE...HEAD --stat` — files and line counts
 3. `git diff $BASE...HEAD` — net diff (the authoritative "what changed")
-4. Observation files where `working-branch` matches the current branch — glob `docs/observations/**/*.md`, grep frontmatter
+4. Observation files where `working-branch` matches the current branch — glob `docs/observations/**/*.md`, grep frontmatter. Input only, see Observation handling below
 
 Describe the net diff, not the commit log. Use commits only to understand *why*.
 
@@ -66,9 +62,9 @@ Describe the net diff, not the commit log. Use commits only to understand *why*.
 
 ## Observation handling
 
-For each observation with matching `working-branch`:
-- If the diff addresses its issue → list under `## Observations resolvidas`
-- Otherwise → do not mention it
+Observations are a personal dev artifact, not shared with the team — see `~/.claude/rules/objective-writing.md`. Never link, cite, or name an observation file in `mr.md`.
+
+For each observation with matching `working-branch` whose issue the diff addresses, fold its resolution into the relevant `## Mudanças` bullet, described in plain language — not as a separate section, not by filename.
 
 Do not modify observation files from this skill.
 
@@ -82,3 +78,4 @@ If `git diff $BASE...HEAD` is empty, report that to the user and do not create `
 - No preamble ("Este MR faz..."), no emoji, no marketing language
 - Skip incidental refactors unless they are the dominant change
 - One bullet per logical change — not one per file and not one per commit
+- No personal/session jargon or internal artifact references — see `~/.claude/rules/objective-writing.md`

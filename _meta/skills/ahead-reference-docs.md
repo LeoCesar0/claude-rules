@@ -14,6 +14,10 @@ Applies to reference/architecture/workflow docs describing how the system
 works. Does not apply to intentionally temporal docs — changelogs, ADRs,
 migration guides, dev meta-docs, current-work — which keep their timeline.
 
+Specializes `~/.claude/rules/objective-writing.md` for this doc type — the
+timeline-stripping rules below are its enforcement checklist for reference
+docs specifically.
+
 ## The test
 
 Every sentence must be true and understandable to a reader who has seen only
@@ -58,9 +62,9 @@ Line: rationale-as-permanent-fact stays; rationale-as-historical-episode
 
 ## Links and meta-docs
 
-- **CRITICAL**: A reference doc must not link observations or dev meta-docs —
-  llm-human development scaffolding, gitignored or personal working files. When
-  porting or editing, remove such links that already exist.
+- **CRITICAL**: No personal/non-shared artifact links — see
+  `~/.claude/rules/objective-writing.md`. When porting or editing, remove such
+  links that already exist.
 - Reference another published doc instead of restating — prefer a link over
   duplication.
 - A permanent fact whose only record is a meta-doc: absorb the fact inline; do
