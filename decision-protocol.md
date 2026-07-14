@@ -46,8 +46,9 @@ examples). Never reuse the `current-work` status glyphs (`🔄 ⬜ ⏸️ ✅ �
 - Each point uses this template, in order (icon per field from the legend):
   1. 🔹 **Title** (+ counter when 2+ points)
   2. 📌 **What it is** + a concrete example — always
-  3. 🔀 **Before vs. after** — mark the two states inline as `🔴 <before> → 🟢
-     <after>`; only when the change alters existing behavior or values, else omit
+  3. 🔀 **Before vs. after** — put each state on its own line, `🔴 <before>` and
+     `🟢 <after>`, with no connecting arrow; only when the change alters existing
+     behavior or values, else omit
   4. ⭐ **Recommendation** + why — always; the recommendation is the right-fit
      path (see Recommendation discipline)
   5. ⚠️ **Not recommended** + why — only when a real trap exists: a path that
