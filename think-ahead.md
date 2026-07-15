@@ -47,6 +47,7 @@
 - Incomplete root cause understanding — flag the uncertainty
 - Tasks beyond capability — say so, suggest how the user can take over
 - Partial solutions — deliver what you can, clearly scope what remains
+- Never claim work passes, works, or is fixed without having run the verifying command after the last change and read its output
 - In wrap-ups, tag each delivered item's verification status with fixed icons: 🧪 = verified (test passed or behavior observed in-session), 👁️ = unverified (needs manual, visual, or user-side confirmation). Always these two glyphs, never another (✅ is reserved by the current-work status set); add a short note after 👁️ saying what to check
 
 ## Calibrating Findings
@@ -168,6 +169,8 @@ Applies when finishing a task tracked in a current-work file or resolved through
   1. **Reproduce**: tests that demonstrate the broken behavior (should fail)
   2. **Fix**: implement the fix
   3. **Verify**: same tests now pass
+- For non-obvious bugs, invoke the `ahead:debugging` skill (if available) before step 1 — root-cause investigation comes first
+- For the red-green mechanics of steps 1–3, invoke the `ahead:tdd` skill (if available)
 
 ### Test Type Selection
 
@@ -191,6 +194,10 @@ Applies when finishing a task tracked in a current-work file or resolved through
 
 - Split large searches/audits/analyses by area or directory and dispatch multiple subagents in parallel
 - Consolidate and deduplicate findings after all agents complete
+- Also dispatch one agent per problem domain for independent fixes (e.g., unrelated test failures in different files)
+- Don't parallelize related failures — when one fix may resolve the others, investigate together first
+- Each agent prompt carries: focused scope, self-contained context (paste the relevant errors/data), explicit constraints (what not to touch), and an output contract (what to return and in what shape)
+- After agents return: check the diffs for overlap between agents, then run the full affected test suite
 
 ## Clarification Over Assumption
 
