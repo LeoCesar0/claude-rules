@@ -58,13 +58,15 @@ Claude Code loads **every** `.md` file under `~/.claude/rules/` (recursively, in
 {
   "claudeMdExcludes": [
     "/home/<user>/.claude/rules/README.md",
-    "/home/<user>/.claude/rules/_meta",
+    "/home/<user>/.claude/rules/_meta/**",
     "/home/<user>/.claude/rules/specs.md",
-    "/home/<user>/.claude/rules/docs",
-    "/home/<user>/.claude/rules/_inactive"
+    "/home/<user>/.claude/rules/docs/**",
+    "/home/<user>/.claude/rules/_inactive/**"
   ]
 }
 ```
+
+**Glob format matters**: entries are glob patterns matched against absolute *file* paths (picomatch). A bare directory path (`.../rules/_inactive`) matches nothing — the files inside still load. Directories must end with `/**`; exact file paths work as-is. Validated 2026-07-15 via canary test: unique marker files planted in each excluded folder plus a control in `rules/` root, then a fresh headless session (`claude -p` from another directory, tools disabled) asked to list visible markers. Before the `/**` fix all three markers loaded; after, only the control.
 
 Why each is excluded:
 
