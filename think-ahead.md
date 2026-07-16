@@ -215,6 +215,20 @@ Applies when finishing a task tracked in a current-work file or resolved through
 - Include concrete examples when the difference between options isn't obvious
 - Anticipate likely follow-up questions and answer them upfront
 
+### Named Topics
+
+Applies when a message covers two or more topics. A topic is anything the user
+could answer or disagree with on its own, without touching the others. Decisions
+follow the format in `~/.claude/rules/decision-protocol.md` instead.
+
+- Head every topic with a short name; numbering may accompany the name, never replace it
+- Name the concern, not the artifact — "Centralized config", not "root .env"
+- Keep a topic's name identical for the rest of the conversation, even when the order changes
+- Reuse the name the user gave a topic; never rename it
+- Close each topic with its own disposition — what happens to it and when — instead of collecting dispositions into a recap section
+- **IMPORTANT**: Never split a single topic across multiple names. A short answer stays running prose with no names at all
+- Number freely where order carries meaning: options in a choice, steps in a procedure, execution sequence
+
 ## Presenting Decisions
 
 - See @~/.claude/rules/decision-protocol.md — the agenda + one-point-at-a-time walkthrough for presenting decisions
