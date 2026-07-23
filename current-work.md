@@ -13,6 +13,11 @@ file. Does not apply to a one-off read.
 - It is a **summary and a hub**, never the source of truth — the detail of each
   item lives in its linked observation or spec. Never paste content that already
   lives in an observation; link to it.
+- **IMPORTANT**: Current-work records *what* is being worked on, never the detail
+  of the work.
+- Progress notes, decisions, changed values, findings, trade-offs, and
+  specifics live in the linked observation or spec — never in a current-work
+  row, and never accreted into a row as the task evolves.
 - Write all content in **Portuguese-BR**. Only technical tokens (paths, branch
   names, commit SHAs, identifiers) stay as-is.
 - **IMPORTANT**: For `.html`, link an external stylesheet
@@ -60,6 +65,16 @@ For a `.md` current-work file, mirror the same sections and tables in Markdown.
   given verdict. **Never conflate ⏸️ and 🔒** — ⏸️ means the work is done and
   waiting on the user; 🔒 means the work has not started because it is
   waiting on the user first.
+- **`Task`** — the task name as a short noun phrase; one line. Not a place for
+  progress or approach.
+- **`Resumo`** — one to two lines stating what the task is about; a brief
+  description only, never more than two lines.
+- **IMPORTANT**: `Resumo` never accretes. Do not append progress notes,
+  decisions, changed values, findings, or specifics to it as the task evolves —
+  those belong in the linked observation or spec.
+- On every update, re-point or shorten `Resumo`; never grow it past two lines. If
+  the task needs more than two lines to describe, that detail belongs in its
+  observation or spec, and `Resumo` links there via the `Obs` column.
 - **`Obs`** — a relative, clickable `<a href>` to the observation file
   (`../observations/<area>/<type>/YYYY-MM-DD-slug.html|md`), link text = short
   label. Use `—` when there is no observation.
